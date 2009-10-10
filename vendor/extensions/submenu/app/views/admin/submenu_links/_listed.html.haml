@@ -1,0 +1,22 @@
+%tr.node.level-1
+  - render_region :tbody do |tbody|
+
+    - tbody.name_cell do
+      %td.submenu_link
+        = link_to link.name, edit_admin_submenu_link_url(link)
+
+    - tbody.destination_cell do
+      %td.submenu_link_destination
+        = link_to link.url, urlize_path(link.url)
+      
+    - tbody.flags_cell do
+      %td.submenu_link_flags
+        - if link.global?
+          global
+        - else
+          = link_to link.user.name, admin_user_url(link.user)
+
+    - tbody.modify_cell do
+      %td.remove
+        - if admin?
+          = link_to(image('remove', :alt => 'Remove Link'), admin_submenu_link_url(link), :method => :delete, :confirm => "really delete link '#{link.name}'?") 

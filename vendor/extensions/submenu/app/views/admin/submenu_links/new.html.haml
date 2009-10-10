@@ -1,0 +1,10 @@
+- include_stylesheet 'admin/submenu' 
+
+- render_region :main do |main|
+  - main.edit_header do
+    %h1
+      New submenu link
+
+  - main.edit_form do
+    - form_for :submenu_link, :url => admin_submenu_links_path, :html => { :method => "post", :multipart => true } do |form|
+      = render :partial => 'form', :object => form

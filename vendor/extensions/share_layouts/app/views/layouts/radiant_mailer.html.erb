@@ -1,0 +1,5 @@
+<%- 
+  ivars = {}
+  instance_variables.map {|iv| ivars[iv.intern] = instance_variable_get(iv)}
+%>
+<%= radiant_mailer_layout( ivars ) %>

@@ -1,0 +1,17 @@
+- include_stylesheet('admin/messages')
+
+= render_region :top 
+- render_region :main do |main|
+
+  - main.edit_header do
+    %h1 
+      New message
+    %p
+      Press the 'save and preview' below to see how your message will look when laid out and addressed to someone, and to choose to whom it should be sent.
+
+  - main.edit_form do
+    - form_for :message, @message, :url => admin_messages_url, :html => {:id => 'message_form', :method => 'post'} do |f|
+      = render :partial => 'form', :object => f
+
+  - main.edit_footer do
+    = render :partial => 'help'

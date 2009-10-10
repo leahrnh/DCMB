@@ -1,0 +1,17 @@
+- include_stylesheet('admin/reader')
+= render_region :top 
+
+%h1 Readers
+
+%table#readers.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+  %thead
+    = render :partial => 'list_head'
+  %tbody
+    - @readers.each do |reader|
+      = render :partial => 'listed', :locals => {:reader => reader}
+      
+- render_region :bottom do |bottom|
+  - bottom.new_button do
+    - if admin?
+      %p
+        = link_to image('new-reader', :alt => 'New Reader'), new_admin_reader_url, :title => "New Reader"
