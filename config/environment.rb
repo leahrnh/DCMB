@@ -10,14 +10,16 @@ require File.join(File.dirname(__FILE__), 'boot')
 require 'radius'
 
 Radiant::Initializer.run do |config|
+  config.gem 'authlogic'
+  
   # Skip frameworks you're not going to use (only works if using vendor/rails).
   # To use Rails without a database, you must remove the Active Record framework
-  config.frameworks -= [ :action_mailer ]
+  # config.frameworks -= [ :action_mailer ]
 
   # Only load the extensions named here, in the order given. By default all
   # extensions in vendor/extensions are loaded, in alphabetical order. :all
   # can be used as a placeholder for all extensions not explicitly named.
-  # config.extensions = [ :all ]
+  config.extensions = [  :share_layouts, :submenu, :reader, :all ]
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
