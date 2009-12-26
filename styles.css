@@ -1,7 +1,12 @@
-/*@import url("http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css");*/
+@import url("http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css");
+
+html {
+    background-color: #87B37E;
+}
 
 body {
-    background-color:#87B37E;
+    /*background-color:#87B37E;*/ /*this doesn't seem to be necessary if it's in html...*/
+    margin: 8px;
 }
 
 #container {
