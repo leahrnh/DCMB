@@ -2,3 +2,4 @@ radiant --version '>= 0.8.1'
 rdiscount --version '>= 1.3.5'
 authlogic --version '>= 2.1.2'
 gravtastic --version '>= 2.1.3'
+sanitize
