@@ -16,14 +16,18 @@ class Group < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
   
+  named_scope :with_home_page, { :conditions => "homepage_id IS NOT NULL", :include => :homepage }
+  named_scope :subscribable, { :conditions => "public = 1" }
+  named_scope :unsubscribable, { :conditions => "public = 0" }
+  
   def url
     homepage.url if homepage
   end
   
   def send_welcome_to(reader)
     if reader.activated?                                        # welcomes will be triggered again on activation
-      message = messages.find_by_function('group_welcome')      # only if a group_welcome message exists *belonging to this group*
-      message.deliver_to(reader) if message                     # the belonging also allows us to mention the group in the message
+      message = messages.for_function('group_welcome').first    # only if a group_welcome message exists *belonging to this group*
+      message.deliver_to(reader) if message                     # (the belonging also allows us to mention the group in the message)
     end
   end
 

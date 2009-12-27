@@ -15,9 +15,25 @@ module GroupedModel
       class_eval {
         extend GroupedModel::GroupedClassMethods
         include GroupedModel::GroupedInstanceMethods
+
+        def visible_to?(reader)
+          return true unless group
+          return false unless reader
+          return true if reader.is_user?
+          return true if reader.is_in?(group)
+          return false
+        end
+
       }
+      
       belongs_to :group
       named_scope :ungrouped, {:conditions => 'group_id IS NULL'}
+      named_scope :for_group, lambda { |g| {:conditions => ["group_id = ?", g]} }
+      named_scope :visible_to, lambda { |reader| 
+        groups = reader.nil? ? [] : reader.groups
+        {:conditions => ["group_id IS NULL OR group_id IN(?)", groups.map(&:id).join(',')]} 
+      }
+      
       Group.send(:has_many, self.to_s.pluralize.underscore.intern)
 
       before_create :get_group
@@ -51,18 +67,11 @@ module GroupedModel
   end
 
   module GroupedInstanceMethods
+
     def visible?
       !!group
     end
 
-    def visible_to?(reader)
-      return true unless group
-      return false unless reader
-      return true if reader.is_user?
-      return true if reader.is_in?(group)
-      return false
-    end
-    
     def permitted_groups
       [group]
     end

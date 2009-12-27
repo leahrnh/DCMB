@@ -10,8 +10,8 @@ module ReaderGroup
 end
 
 class ReaderGroupExtension < Radiant::Extension
-  version "0.8"
-  description "Page access control for site readers and groups"
+  version "0.81"
+  description "Page (and other) access control for site readers and groups"
   url "http://spanner.org/radiant/reader_group"
 
   define_routes do |map|
@@ -28,22 +28,26 @@ class ReaderGroupExtension < Radiant::Extension
   end
   
   def activate
-    ActiveRecord::Base.send :include, GroupedModel                                # is_grouped mechanism for any model that can belong_to a group
-                                                                                  # here it's only used for messages: the other associations are habtm
+    ActiveRecord::Base.send :include, GroupedModel                                    # is_grouped mechanism for any model that can belong_to a group
+                                                                                      # here it's only used for messages: the other associations are habtm
     
-    Reader.send :include, GroupedReader                                           # defines group associations
-    Page.send :include, GroupedPage                                               # group associations and visibility decisions
-    Message.send :include, GroupedMessage                                         # group association
+    Reader.send :include, GroupedReader                                               # defines group associations
+    Page.send :include, GroupedPage                                                   # group associations and visibility decisions
+    Message.send :include, GroupedMessage                                             # group association
 
-    ReaderNotifier.send :include, ReaderNotifierExtensions                        # a couple of new message types
-    SiteController.send :include, SiteControllerExtensions                        # access control based on group membership
-    MessagesController.send :include, MessagesControllerExtensions                # listing and display of group messages
-    Admin::MessagesController.send :include, AdminMessagesControllerExtensions    # supports specification of group on newing of message
-    UserActionObserver.instance.send :add_observer!, Group 
+    ReaderNotifier.send :include, ReaderNotifierExtensions                            # a couple of new message types
+    SiteController.send :include, SiteControllerExtensions                            # access control based on group membership
+    ReadersController.send :include, ReadersControllerExtensions                      # offer subscription to public groups
+    MessagesController.send :include, MessagesControllerExtensions                    # listing and display of group messages
+    Admin::MessagesController.send :include, AdminMessagesControllerExtensions        # supports specification of group on newing of message
+    ReaderSessionsController.send :include, ReaderSessionsControllerExtensions        # sends newly logged-in readers to a group home page if one can be found
+    ReaderActivationsController.send :include, ReaderActivationsControllerExtensions  # sends newly activated readers to a group home page if one can be found
+    UserActionObserver.instance.send :add_observer!, Group                            # the usual date-stamping and ownership
+    MessageFunction.add('group_welcome', 'Group-membership notification')
+    Page.send :include, GroupMessageTags                                              # extra tags for talking about groups in mailouts
 
-    Page.send :include, GroupMessageTags                                          # extra tags for talking about groups in mailouts
 
-    unless defined? admin.group                                                   # to avoid duplicate partials
+    unless defined? admin.group                                                       # to avoid duplicate partials
       Radiant::AdminUI.send :include, GroupUI
       admin.group = Radiant::AdminUI.load_default_group_regions
       admin.page.edit.add :parts_bottom, "page_groups", :before => "edit_timestamp"
@@ -51,7 +55,7 @@ class ReaderGroupExtension < Radiant::Extension
       admin.messages.edit.add :form, "admin/messages/edit_group", :after => "edit_filter_and_status"
       admin.messages.show.add :delivery, "admin/messages/delivery_group", :before => "deliver_all"
 
-      # how to get at message object in these partials?
+      # how can I get at the in-loop message object in these?
       # admin.messages.index.add :thead, "admin/messages/group_header", :after => "subject_header"
       # admin.messages.index.add :tbody, "admin/messages/group_cell", :after => "subject_cell"
     end
