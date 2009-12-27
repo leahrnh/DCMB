@@ -1,4 +1,3 @@
-
 - with_error_report(@reader.errors.on(:name)) do
   = f.label :name, 'Your name', :class => 'required'
   %span.formnote as you would like it to appear
@@ -54,7 +53,7 @@
 - with_error_report(@reader.errors.on(:password)) do
   - label = @reader.new_record? ? 'Password' : 'Change password?'
   - cssclass = @reader.new_record? ? 'required' : 'optional'
-  - help = @reader.new_record? ? 'at least four characters, please' : 'leave blank to keep present password. if changing, at least four characters.'
+  - help = @reader.new_record? ? 'at least four characters, please' : 'leave blank to keep present password. If changing, at least four characters.'
   
   = f.label :password, label, :class => cssclass
   %span.formnote
@@ -63,9 +62,12 @@
   = f.password_field :password, :class => 'standard', :autocomplete => 'off'
 
 - with_error_report(@reader.errors.on(:password_confirmation)) do
-  = f.label :password_confirmation, "Confirm password", :class => @reader.new_record? ? 'required' : 'optional'
+  = f.label :password_confirmation, "Confirm #{'new ' unless @reader.new_record?}password", :class => @reader.new_record? ? 'required' : 'optional'
   - unless @reader.new_record?
     %span.formnote
       leave blank to keep present password
       %br
   = f.password_field :password_confirmation, :class => 'standard', :autocomplete => 'off'
+
+- @form_partials.each do |partial|
+  = render :partial => partial

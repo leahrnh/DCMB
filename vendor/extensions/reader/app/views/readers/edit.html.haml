@@ -1,5 +1,4 @@
 = render :partial => 'flasher'
-= render :partial => 'controls'
 
 %div.preferences_form
   %p
@@ -9,9 +8,9 @@
     First, just to make sure you're you, please enter your current password:
 
   - unless @reader.errors.empty?
-    %p.haserror
+    %p.errornote
       %strong Sorry: there were problems.
-      Please check the form. The affected fields will be highlighted
+      Please check the form. The affected fields will be highlighted.
       
   - form_for :reader, :url => reader_url(@reader), :html => { :method => "put", :class => 'friendly'} do |f| 
     
@@ -23,13 +22,14 @@
       = f.password_field :current_password, :class => 'standard', :autocomplete => 'off'
       
     %p
-      Fields with bold headings are required and will cause grumbling if left blank.
+      Fields with bold headings are required and will cause grumbling if left blank:
       
     = render :partial => 'form', :locals => {:f => f}
     %p
       = submit_tag "Update your account"
       or 
       = link_to 'cancel', request.referer
+
   %p
     = link_to gravatar_for(@reader, {:size => 60}, {:class => 'gravatar'}), 'http://www.gravatar.com/signup', :target => '_blank'
     If you would like a picture to appear next to your messages, give yourself a 
@@ -43,5 +43,5 @@
   &gt;
   Revise your account
 
-- content_for :title do 
+- content_for :pagetitle do 
   Revise your account

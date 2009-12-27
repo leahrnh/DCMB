@@ -7,6 +7,7 @@ describe ReadersController do
     controller.stub!(:request).and_return(request)
     Page.current_site = sites(:test) if defined? Site
     request.env["HTTP_REFERER"] = 'http://test.host/referer!'
+    Radiant::Config['reader.allow_registration?'] = true
   end
     
   describe "with a get to new" do
@@ -50,9 +51,9 @@ describe ReadersController do
       end
     end
 
-    it "should render the please-activate page" do
-      response.should be_success
-      response.should render_template('create')
+    it "should redirect to the please-activate page" do
+      response.should be_redirect
+      response.should redirect_to(reader_activation_url)
     end
     
     describe "with the trap field filled in" do
@@ -73,46 +74,6 @@ describe ReadersController do
       end
     end
   end
-
-  it "should render the activation screen on get to activate" do
-    get :activate
-    response.should be_success
-    response.should render_template("activate")
-  end
-
-  describe "with a correct activation" do
-    before do
-      @newreader = readers(:inactive)
-      post :activate, :id => @newreader.id, :activation_code => @newreader.perishable_token
-      @reader = Reader.find_by_name('Inactive')
-    end
-
-    it "should activate the reader" do
-      @reader.activated?.should be_true
-      @reader.activated_at.should be_close((Time.now).utc, 1.minute) # sometimes specs are slow
-    end
-
-    it "should show the confirmation page" do
-      response.should be_success
-      response.should render_template('activate')
-    end
-  end
-
-  describe "with an incorrect activation" do
-    before do
-      @newreader = readers(:inactive)
-      post :activate, :email => @newreader.email, :activation_code => 'down periscope'
-    end
-    
-    it "should rerender the activation form" do
-      response.should render_template("activate")
-    end
-
-    it "should flash an error" do
-      flash[:error].should_not be_nil
-    end
-  end
-
   
   describe "to the browser" do
     describe "who has logged in" do
@@ -214,6 +175,19 @@ describe ReadersController do
         response.should render_template("edit")
       end
 
+    end
+  end
+  
+  describe "when registration is not allowed" do
+    before do
+      Radiant::Config['reader.allow_registration?'] = false
+    end
+    
+    it "should not offer the registration form" do
+      get :new
+      response.should be_redirect
+      response.should redirect_to reader_login_url
+      flash[:error].should_not be_nil
     end
   end
 end

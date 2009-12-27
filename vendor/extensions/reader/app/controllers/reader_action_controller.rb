@@ -1,11 +1,15 @@
 class ReaderActionController < ApplicationController
+  helper_method :current_site, :current_site=, :logged_in?, :logged_in_user?, :logged_in_admin?
   
   no_login_required
   before_filter :set_reader_for_user
   before_filter :set_site_title
   
+  # reader session is required for modifying actions
   before_filter :require_reader, :except => [:index, :show]
-  helper_method :current_site, :current_site=, :logged_in?, :logged_in_user?, :logged_in_admin?
+  
+  # reader information available but not required for non-modifying actions
+  before_filter :set_reader, :only => [:index, :show]
   
   radiant_layout { |controller| controller.layout_for :reader }
 
@@ -23,13 +27,19 @@ class ReaderActionController < ApplicationController
     true if logged_in_user? && current_reader.admin?
   end
 
+  def permission_denied
+    session[:return_to] ||= request.referer
+    @title = flash[:error] || "Sorry: permission denied"
+    render
+  end
+
 protected
   
   # context-setters
     
   def set_reader_for_user
     if current_user
-      @current_reader_session = ReaderSession.create!(Reader.find_or_create_for_user(current_user))
+      current_reader_session = ReaderSession.create!(Reader.find_or_create_for_user(current_user))
     end
   end
 
@@ -46,20 +56,21 @@ protected
   end
 
   def require_reader
-    if current_reader
-      Reader.current = current_reader
-    else
+    unless set_reader     # set_reader is in ControllerExtension and sets Reader.current while checking for current_reader
       store_location
       respond_to do |format|
         format.html { redirect_to reader_login_url }
-        format.js { render :partial => 'reader_sessions/login_form' }
+        format.js { 
+          @inline = true
+          render :partial => 'reader_sessions/login_form' 
+        }
       end
       return false
     end
   end
 
   def require_no_reader
-    if current_reader
+    if set_reader
       store_location
       flash[:notice] = "Please log out first"
       redirect_back_or_to url_for(current_reader)
@@ -67,29 +78,4 @@ protected
     end
   end
 
-  def store_location(location = request.request_uri)
-    session[:return_to] = location
-  end
-
-  # generic responses
-
-  def redirect_back_or_to(default)
-    redirect_to(session[:return_to] || default)
-    session[:return_to] = nil
-  end
-  
-  def redirect_back_with_format(format = 'html')
-    address = session[:return_to]
-    raise StandardError, "Can't add format to an already formatted url: #{address}" unless File.extname(address).blank?
-    redirect_to address + ".#{format}"    # nasty!
-  end
-  
-  def render_page_or_feed(template_name = action_name)
-    respond_to do |format|
-      format.html { render :action => template_name }
-      format.rss  { render :action => template_name, :layout => 'feed' }
-      format.js  { render :action => template_name, :layout => false }
-    end
-  end
-  
 end

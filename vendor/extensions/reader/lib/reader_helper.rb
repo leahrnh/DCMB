@@ -1,3 +1,4 @@
+require 'sanitize'
 module ReaderHelper
   def self.included(base)
 
@@ -16,7 +17,7 @@ module ReaderHelper
       end
 
       def clean_textilize(text)
-          white_list(textilize(text))   # two step so simple user-input html works too
+        Sanitize.clean(textilize(text), Sanitize::Config::RELAXED)
       end
 
       def clean_textilize_without_paragraph(text)
@@ -36,7 +37,6 @@ module ReaderHelper
       def truncate_and_textilize(text, length=64)
         clean_textilize( truncate_words(text, length) )
       end
-      
     end
   end
 end
