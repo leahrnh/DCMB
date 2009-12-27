@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + "/../spec_helper"
 describe "ApplicationHelper" do
   include ApplicationHelper
   dataset :users, :submenu_links
-  
+
   it "should include Admin::SubMenuHelper" do
     ApplicationHelper.included_modules.should include(Admin::SubmenuHelper)
   end

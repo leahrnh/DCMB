@@ -9,6 +9,7 @@ module ResourceControllerExtensions
   def set_javascripts_and_stylesheets_with_submenu
     set_javascripts_and_stylesheets_without_submenu
     @stylesheets << 'admin/submenu'
+    @javascripts << 'admin/submenu'
   end
 
 end

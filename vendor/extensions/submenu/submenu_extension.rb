@@ -17,12 +17,14 @@ class SubmenuExtension < Radiant::Extension
     Radiant::AdminUI.send :include, Submenu
     ApplicationHelper.send :include, Admin::SubmenuHelper
     ApplicationController.send :include, ResourceControllerExtensions
+    UserActionObserver.instance.send :add_observer!, SubmenuLink
 
     unless defined? admin.submenu_links
       Radiant::AdminUI.send :include, SubmenuAdminUI
       admin.submenu_link = Radiant::AdminUI.load_default_submenu_link_regions
     end
-
+    
+    admin.tabs['Pages'].add_link('page tree', '/admin/pages')
   end
   
   def deactivate

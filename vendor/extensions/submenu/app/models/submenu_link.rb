@@ -1,6 +1,6 @@
 class SubmenuLink < ActiveRecord::Base
 
-  is_site_scoped if defined? ActiveRecord::SiteNotFound
+  is_site_scoped if respond_to? :is_site_scoped
 
   belongs_to :user
   belongs_to :created_by, :class_name => 'User'
@@ -13,6 +13,10 @@ class SubmenuLink < ActiveRecord::Base
 
   def global?
     !user
+  end
+  
+  def shown_for?(this_user)
+    global? || user == this_user
   end
 
 end

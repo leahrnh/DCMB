@@ -4,7 +4,9 @@ This extension adds a useful second layer of navigation to the main radiant admi
 
 ## Latest
 
-I've added a shortcut mechanism so that you can put commonly-used links in the left-hand side of the submenu on a per-user (or global) basis. Advanced users can make their own bookmarks (which is all they are really) but it's more likely that the site admin will use this to make key tasks more accessible. I'm using it to eliminate link-hunting with deep admin links like 'add a blog entry' and 'upload images'.
+* If you're running with our multi_site, the submenu will include a drop-down site list on any index page that lists a site-scoped model.
+
+* I've added a shortcut mechanism so that you can put commonly-used links in the left-hand side of the submenu on a per-user (or global) basis. Advanced users can make their own bookmarks (which is all they are really) but it's more likely that the site admin will use this to make key tasks more accessible. I'm using it to eliminate link-hunting with deep admin links like 'add a blog entry' and 'upload images'.
 
 ## Status
 

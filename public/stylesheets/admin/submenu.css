@@ -1,14 +1,23 @@
+#navigation {
+  padding: 0;
+  border-bottom: 0;
+}
+
+#navigation #navigation_tabs {
+  padding:0.5em 20px 0.5em 0.5em;
+}
+
 #navigation #submenu {
-  position: absolute;
-  top: 86px;
+  position: relative;
+  top: 0;
   left: 0;
   width: 100%;
   color: #c1bca4;
   background-color: #EAE3C5;
-  text-align: right;
   height: 20px;
   padding-top: 4px;
   overflow: hidden;
+  text-align: right;
 }
 
 #navigation #submenu #submenu_links {
@@ -21,7 +30,7 @@
 }
 
 #navigation #submenu div {
-  margin: 0 20px;
+  margin: 0 25px;
 }
 
 #navigation #submenu a, #navigation #submenu a:visited {
@@ -69,8 +78,54 @@
 
 }
 
-#content {
-  margin-top: 24px;
+/* site chooser floats left in submenu under multi_site */
+
+#site_chooser {
+  float: left;
+}
+
+#navigation #submenu a.expandable {
+  padding-left: 10px;
+  background: transparent url(/images/admin/menu_expandable.png) no-repeat 0 5px;
+}
+#navigation #submenu a.expandable:hover {
+  background: transparent url(/images/admin/menu_expandable_over.png) no-repeat 0 5px;
+}
+#navigation #submenu a.expanded {
+  padding-left: 10px;
+  background: transparent url(/images/admin/menu_expanded.png) no-repeat 0 5px;
+}
+#navigation #submenu a.expanded:hover {
+  background: transparent url(/images/admin/menu_expanded_over.png) no-repeat 0 5px;
+}
+
+ul#site_list {
+  position: absolute;
+  font-size: 85%;
+  padding: 10px;
+  margin: 0;
+  top: 0;
+  left: 16px;
+  width: 160px;
+  color: #c1bca4;
+  background-color: #EAE3C5;
+  list-style: none;
+  overflow: hidden;
+}
+
+ul#site_list a, ul#site_list a:visited {
+  position: relative;
+  background: transparent;
+  color: #7d796c;
+  text-decoration: none;
+}
+
+ul#site_list a.fg {
+  font-weight: bold;
+}
+
+ul#site_list a:hover {
+  color: black;
 }
 
 /* submenu admin */
@@ -94,3 +149,6 @@
   color: #7d796c;
   font-size: 85%;
 }
+
+
+

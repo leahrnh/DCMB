@@ -1,3 +1,10 @@
+- if @submenu_link.errors.any?
+  %p.haserror
+    %strong
+      Sorry. Validation problems:
+    %br
+    = @submenu_link.errors.full_messages
+
 = render_region :form_top
 .form-area
   - render_region :form do |form_region|

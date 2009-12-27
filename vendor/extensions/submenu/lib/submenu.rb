@@ -57,9 +57,16 @@ module Submenu
   end
   
   class SubmenuLink
-    attr_accessor :name, :url
+    attr_accessor :name, :url, :visibility
     def initialize(name, url, options = {})
       @name, @url = name, url
+      @visibility = [options[:for], options[:visibility]].flatten.compact
+      @visibility = [:all] if @visibility.empty?
+    end
+
+    def shown_for?(user)
+      visibility.include?(:all) or
+        visibility.any? { |role| user.send("#{role}?") }
     end
   end
   
