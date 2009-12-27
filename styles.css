@@ -9,11 +9,12 @@ body {
 }
 
 #container {
-    width: 75%;
+    width: 1075px;
     background-color: #39672F;
     margin: auto;
     padding: 0;
     text-align: left;
+    overflow: hidden;
 }
 
 #header {
@@ -110,7 +111,7 @@ h3 {
     color: #18430F;
     margin: 18px;
     margin-left: 2em;
-    clear:left;
+    /*clear:left;*/
     font-size: 20px;
 }
 
@@ -133,11 +134,11 @@ h3 {
     font-size: .8em;
 }
 
-.clearfloat {
+/*.clearfloat {
     clear: both;
     height: 0;
     font-size: 1px;
-}
+}*/
 
 /* new clearfix */
 .clearfix:after {
