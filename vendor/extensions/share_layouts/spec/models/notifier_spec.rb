@@ -9,7 +9,7 @@ class NotifierWithRadiantLayoutBlock < ActionMailer::Base
 end
 
 class Notifier < ActionMailer::Base
-  radiant_layout { |m| m.layout_for :test }
+  radiant_layout { |m| m.default_layout_for :test }
   
   def test(recipient="test@spanner.org")
     from "someone@spanner.org"
@@ -23,7 +23,7 @@ describe NotifierWithRadiantLayout do
   dataset :layouts
   
   it "should have radiant layout attribute" do
-    NotifierWithRadiantLayout.read_inheritable_attribute('radiant_mailer_layout_name').should == 'main'
+    NotifierWithRadiantLayout.read_inheritable_attribute('default_radiant_mailer_layout_name').should == 'main'
   end
 end
   
@@ -31,7 +31,7 @@ describe NotifierWithRadiantLayoutBlock do
   dataset :layouts
   
   it "should have radiant layout block" do
-    NotifierWithRadiantLayoutBlock.read_inheritable_attribute('radiant_mailer_layout_name').should be_kind_of(Proc)
+    NotifierWithRadiantLayoutBlock.read_inheritable_attribute('default_radiant_mailer_layout_name').should be_kind_of(Proc)
   end
 end
 

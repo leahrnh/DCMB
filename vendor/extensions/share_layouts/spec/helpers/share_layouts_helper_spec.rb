@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + "/../spec_helper"
 
 describe ShareLayouts::Helper do
   include ShareLayouts::Helper
-  dataset :layouts, :pages, :share_layouts_pages
+  dataset :layouts, :share_layouts_pages#, :pages
   test_helper :page
   attr_accessor :request, :response
   
@@ -159,10 +159,10 @@ TEXT
   
   it "should find_page" do
     @request.path = "/app/something/"
-    find_page.should == pages(:rails_page)
+    find_page.should == pages(:app)
     find_page.should be_a_kind_of(RailsPage)
     @request.path = "/some-other/url/"
-    find_page.should_not == pages(:rails_page)
+    find_page.should_not == pages(:app)
     find_page.should be_a_kind_of(RailsPage)
   end
 end

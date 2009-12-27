@@ -1,6 +1,6 @@
 class RailsPage < Page
   display_name "Application"
-  attr_accessor :breadcrumbs
+  attr_accessor :breadcrumbs, :cached
 
   def find_by_url(url, live=true, clean=true)
     found_page = super
@@ -18,6 +18,18 @@ class RailsPage < Page
   
   def url
     @url || super
+  end
+  
+  def cache?
+    true if @cached
+  end
+  
+  def cache!
+    @cached = true
+  end
+  
+  def uncache!
+    @cached = false
   end
   
   def build_parts_from_hash!(content)

@@ -59,7 +59,8 @@ class ShareController < ApplicationController
 end
 
 describe ShareController do
-  dataset :layouts
+  # we load :share_layouts_pages only so that the home page is there when multi_site is creating a default site
+  dataset :share_layouts_pages, :layouts
 
   before(:each) do
     @controller = ShareController.new
