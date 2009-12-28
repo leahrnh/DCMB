@@ -1,12 +1,11 @@
 @import url("http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css");
 
-html {
+html, body {
     background-color: #87B37E;
 }
 
 body {
-    /*background-color:#87B37E;*/ /*this doesn't seem to be necessary if it's in html...*/
-    margin: 8px;
+    padding: 8px;
 }
 
 #container {
@@ -15,28 +14,39 @@ body {
     margin: auto;
     padding: 0;
     text-align: left;
+    overflow: hidden;
 }
 
 #header {
     background-color: #18430F;
     color: #FFFFFF;
     text-align: left;
-    padding: 0;
+    padding: 12px;
     overflow: hidden;
 }
 
-#andNow {
+#andNow, #m-joke {
     text-align: left;
-    margin-left: 1em;
     font-size: 14pt;
     font-style: italic;
     color: #77B36A;
+    padding: 5px;
+    font-family: serif;
+}
+
+#andNow {
+    margin-left: 1em;
+}
+
+#m-joke {
+    margin-left: 3em;
 }
 
 #dcmbTitle {
     text-align: center;
     font-size: 25pt;
     font-family: sans-serif;
+    padding: 12px;
 }
 
 #navbar {
@@ -70,10 +80,9 @@ body {
 
 #content {
     background-color: #FFFFFF;
-    padding: 10px 20px 0 1em;
+    padding: 10px 20px 10px 1em;
     margin: 1em;
     margin-left: 13em;
-    /*margin-right: 0;*/
 }
     
 #content p {
@@ -81,26 +90,46 @@ body {
     font-family: sans-serif;
 }
 
+#content ul {
+    list-style-type: none;
+    margin-left:2em;
+}
+
+#directorate #content ul {
+  margin-left: 0;
+}
+
+#directorate #content li {
+  display: block;
+  clear: both;
+  list-style-position: inside;
+}
+
 h1, h2, h3 {
     font-weight: bold;
+    color: #18430F;
+    font-family: serif;
 }
 
 h1 {
     text-align: center;
-    color: #18430F;
-    font-family:serif;
-    font-size: 2em;
+    font-size: 32px;
+    padding: 18px;
 }
 
 h2 {
+    font-size: 24px;
     margin-left: 2em;
     color: #18430F;
+    padding: 5px;
 }
 
 h3 {
     color: #18430F;
+    margin: 18px;
     margin-left: 2em;
-    clear:left;
+    /*clear:left;*/
+    font-size: 20px;
 }
 
 .floatRight {
@@ -114,6 +143,18 @@ h3 {
     padding: 0;
 }
 
+#directorate li img {
+  float: left;
+  margin: 0 1em 1em 0;
+  width: 108;
+  height: 108;
+}
+
+#directorate li img + img {
+  float: right;
+  margin: 0 0 1em 1em;
+}
+
 #footer p {
     margin: 0;
     padding: 10px 0;
@@ -122,8 +163,20 @@ h3 {
     font-size: .8em;
 }
 
-.clearfloat {
+/*.clearfloat {
     clear: both;
     height: 0;
     font-size: 1px;
-}
+}*/
+
+/* new clearfix */
+.clearfix:after {
+       visibility: hidden;
+       display: block;
+       font-size: 0;
+       content: " ";
+       clear: both;
+       height: 0;
+       }
+* html .clearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .clearfix { zoom: 1; } /* IE7 */
