@@ -11,9 +11,22 @@
 
 ActiveRecord::Schema.define(:version => 20081203140407) do
 
+  create_table "assets", :force => true do |t|
+    t.string   "caption"
+    t.string   "title"
+    t.string   "asset_file_name"
+    t.string   "asset_content_type"
+    t.integer  "asset_file_size"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "config", :force => true do |t|
-    t.string "key",   :limit => 40, :default => "", :null => false
-    t.string "value",               :default => ""
+    t.string "key",         :limit => 40, :default => "", :null => false
+    t.string "value",                     :default => ""
+    t.text   "description"
   end
 
   add_index "config", ["key"], :name => "key", :unique => true
@@ -22,6 +35,21 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.string  "name"
     t.integer "schema_version", :default => 0
     t.boolean "enabled",        :default => true
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.integer  "homepage_id"
+    t.integer  "site_id"
+    t.integer  "lock_version"
+    t.boolean  "public"
+    t.text     "invitation"
   end
 
   create_table "layouts", :force => true do |t|
@@ -35,6 +63,40 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.integer  "lock_version",                 :default => 0
   end
 
+  create_table "memberships", :force => true do |t|
+    t.integer "group_id"
+    t.integer "reader_id"
+  end
+
+  create_table "message_readers", :force => true do |t|
+    t.integer  "site_id"
+    t.integer  "message_id"
+    t.integer  "reader_id"
+    t.datetime "sent_at"
+  end
+
+  create_table "messages", :force => true do |t|
+    t.integer  "site_id"
+    t.string   "subject"
+    t.text     "body"
+    t.text     "filter_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.integer  "lock_version"
+    t.string   "function_id"
+    t.integer  "status_id",     :default => 1
+    t.integer  "group_id"
+    t.integer  "layout_id"
+  end
+
+  create_table "page_attachments", :force => true do |t|
+    t.integer "asset_id"
+    t.integer "page_id"
+    t.integer "position"
+  end
+
   create_table "page_parts", :force => true do |t|
     t.string  "name",      :limit => 100
     t.string  "filter_id", :limit => 25
@@ -42,7 +104,7 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.integer "page_id"
   end
 
-  add_index "page_parts", ["page_id", "name"], :name => "parts_by_page"
+  add_index "page_parts", ["name", "page_id"], :name => "parts_by_page"
 
   create_table "pages", :force => true do |t|
     t.string   "title"
@@ -61,12 +123,62 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.integer  "lock_version",                 :default => 0
     t.string   "description"
     t.string   "keywords"
+    t.integer  "position"
   end
 
   add_index "pages", ["class_name"], :name => "pages_class_name"
+  add_index "pages", ["parent_id", "slug"], :name => "pages_child_slug"
   add_index "pages", ["parent_id"], :name => "pages_parent_id"
-  add_index "pages", ["slug", "parent_id"], :name => "pages_child_slug"
-  add_index "pages", ["virtual", "status_id"], :name => "pages_published"
+  add_index "pages", ["status_id", "virtual"], :name => "pages_published"
+
+  create_table "permissions", :force => true do |t|
+    t.integer "group_id"
+    t.integer "page_id"
+  end
+
+  create_table "readers", :force => true do |t|
+    t.integer  "site_id"
+    t.string   "name",                    :limit => 100
+    t.string   "email"
+    t.string   "login",                   :limit => 40,  :default => "",    :null => false
+    t.string   "crypted_password"
+    t.text     "description"
+    t.text     "notes"
+    t.boolean  "trusted",                                :default => true
+    t.boolean  "receive_email",                          :default => false
+    t.boolean  "receive_essential_email",                :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.string   "password_salt"
+    t.string   "session_token"
+    t.string   "provisional_password"
+    t.datetime "activated_at"
+    t.string   "honorific"
+    t.integer  "user_id"
+    t.datetime "last_request_at"
+    t.datetime "last_login_at"
+    t.string   "persistence_token",                      :default => "",    :null => false
+    t.string   "single_access_token",                    :default => "",    :null => false
+    t.string   "perishable_token",                       :default => "",    :null => false
+    t.integer  "login_count",                            :default => 0,     :null => false
+    t.integer  "failed_login_count",                     :default => 0,     :null => false
+    t.string   "current_login_ip"
+    t.string   "last_login_ip"
+    t.string   "clear_password"
+    t.string   "forename"
+    t.string   "phone"
+    t.string   "organisation"
+    t.string   "post_building"
+    t.string   "post_street"
+    t.string   "post_place"
+    t.string   "post_town"
+    t.string   "post_county"
+    t.string   "postcode"
+  end
+
+  add_index "readers", ["session_token"], :name => "session_token"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"
@@ -89,6 +201,19 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
   end
 
   add_index "snippets", ["name"], :name => "name", :unique => true
+
+  create_table "submenu_links", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.integer  "user_id"
+    t.integer  "site_id"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "submenu_links", ["site_id", "user_id"], :name => "index_links_by_site_and_user"
 
   create_table "users", :force => true do |t|
     t.string   "name",          :limit => 100
