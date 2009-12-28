@@ -19,7 +19,7 @@ Radiant::Initializer.run do |config|
   # Only load the extensions named here, in the order given. By default all
   # extensions in vendor/extensions are loaded, in alphabetical order. :all
   # can be used as a placeholder for all extensions not explicitly named.
-  config.extensions = [  :settings, :share_layouts, :submenu, :reader, :all ]
+  config.extensions = [  :settings, :share_layouts, :submenu, :reader, :all, :file_system ]
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
