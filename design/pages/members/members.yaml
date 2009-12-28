@@ -1,0 +1,14 @@
+--- 
+class_name: ""
+position: 6
+slug: members
+updated_by_id: 1
+layout_name: <inherit> [Main]
+title: Members
+virtual: false
+created_by_id: 1
+breadcrumb: Members
+description: ""
+published_at: 2009-12-27 00:21:02 Z
+status_id: 100
+keywords: ""
