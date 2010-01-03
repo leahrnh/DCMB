@@ -1,0 +1,46 @@
+= render :partial => 'readers/flasher'
+
+- if current_reader && current_reader.activated?
+
+  %p
+    Thank you very much for persevering with the registration process. Your account is now active.
+
+  = render :partial => 'on_activation'
+    
+  - content_for :pagetitle do
+    Hello 
+    = current_reader.name
+
+- else
+  %div.activation
+    - if @error
+      %p.haserror
+        = @error
+    %p
+      Please check your email.
+      - if current_reader
+        We have sent a message to 
+        %strong
+          = current_reader.email
+        containing a link that will automatically activate your account and log you in. If you can't find the message, we can 
+        = link_to("send it again", new_reader_activation_url) + '.'
+      - else
+        You should have received a message 
+        containing a link that will automatically activate your account and log you in. If you can't find the message, we can 
+        = link_to("send it again", new_password_reset_url) + ':'
+        just put your email address in the password reminder form, and if your account has not been activated you'll receive another activation message.
+
+    - if Radiant::Config['reader.allow_registration?']
+      %p
+        If you think you might have put the wrong email address in, the easiest thing to do is 
+        = link_to 'register again', new_reader_url
+        with the right one. The failed registration attempt will be purged after a couple of days.
+
+  - content_for :pagetitle do
+    Activation message sent
+
+- content_for :breadcrumbs do
+  = link_to 'Home', '/'
+  &gt;
+  Activate your account
+

@@ -1,0 +1,14 @@
+--- 
+class_name: ""
+position: 2
+slug: schedule
+updated_by_id: 1
+layout_name: <inherit> [Main]
+title: Schedule
+virtual: false
+created_by_id: 1
+breadcrumb: Schedule
+description: ""
+published_at: 2009-12-26 22:18:53 Z
+status_id: 100
+keywords: ""

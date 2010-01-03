@@ -1,0 +1,15 @@
+= render :partial => 'readers/flasher'
+
+%div.login_form
+  %h1 
+    Log in
+
+  = render :partial => 'reader_sessions/login_form', :locals => {:backto => @backto}
+
+- content_for :breadcrumbs do
+  = link_to 'Home', '/' 
+  &gt; Log in
+
+- content_for :pagetitle do
+  Log in
+  

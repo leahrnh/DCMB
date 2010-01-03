@@ -1,0 +1,44 @@
+- if @submenu_link.errors.any?
+  %p.haserror
+    %strong
+      Sorry. Validation problems:
+    %br
+    = @submenu_link.errors.full_messages
+
+= render_region :form_top
+.form-area
+  - render_region :form do |form_region|
+    - form_region.edit_name do
+      %p.title
+        = form.label :name, "Link text"
+        = form.text_field :name, :class => 'textbox', :maxlength => 255
+
+    - form_region.edit_url do
+      %p.url
+        = form.label :url
+        = form.text_field :url, :class => 'textbox', :maxlength => 255
+        %span.formnote
+          absolute local link, please: 
+          %strong
+            \/admin/pages, 
+          not admin/pages or www.yoursite.com/admin/pages
+
+    - form_region.edit_user do
+      %p.user
+        = form.label :user_id, "Assign to someone?"
+        %br
+        = form.select :user_id, options_from_collection_for_select(User.find(:all), 'id', 'name'), {:include_blank => true}
+        %br
+        %span.formnote
+          leave this blank and everyone will see the link
+          
+- render_region :form_bottom do |form_bottom_region|
+  - form_bottom_region.edit_timestamp do
+    = updated_stamp @submenu_link  
+
+  - form_bottom_region.edit_buttons do
+    %p.buttons
+      = save_model_button(@submenu_link)
+      = save_model_and_continue_editing_button(@submenu_link)
+      or
+      = link_to "Cancel", admin_submenu_links_url

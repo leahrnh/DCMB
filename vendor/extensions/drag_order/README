@@ -1,0 +1,82 @@
+= Drag Order v0.3.2
+
+Created by Bright 4, February 2009. Inspired by and based on Sean Cribbs' Reorder extension.
+
+This extension allows pages to be moved or copied to any arbitrary (valid) place in the document tree structure by dragging the page to its new position and dropping it there.
+The admin UI is extended with a small drag-button for each page.
+
+The drag-and-drop style was inspired by the way OS-X implements this in various screens.
+
+
+== Installation
+
+You can either use the automated radiant extension install, or install manually.
+
+=== Using Radiant extension install
+
+1) Install the extension using (from your project's root dir):
+   script/extension install drag_order
+
+2) Restart the server and you're ready to drag-and-drop pages.
+
+
+=== Manual install   
+
+1) Unpack/checkout/export the extension into {project root}/vendor/extensions/drag_order (note the underscore here).
+
+2) Run the extension migrations (replace {environment} by the target environment, e.g. production).
+   $ rake {environment} radiant:extensions:drag_order:migrate
+
+3) Run the extension update task.
+   $ rake {environment} radiant:extensions:drag_order:update
+
+4) Restart the server and you're ready to drag-and-drop pages.
+
+
+== Usage
+
+- Click and hold the drag-button of the page you wish to move. If the page has children and is expanded, this page will collapse (because a page cannot be placed in between its descendants).
+- Drag the page to its new position. The purple bar shows the new location and indentation of the page.
+- If, while dragging, you hold the cursor above a page with collapsed children, this page will expand after one second.
+- If you want to place the page you are dragging as the child of a page which does not have any children yet, you can make sure the mouse cursor is located to the right of the drag-button. The indentation of the purple bar will show the page will be placed as a child when the cursor is in that position.
+- If you want to copy a page, hold down Ctrl or Command. A + icon will show up indicating this.
+- The plugin automatically adds 'copy' and, when necessary, a number to the title, slug and breadcrumb when multiple copies are made.
+- If the page has been dragged to the correct location, release the mouse cursor. The admin page will reload with the page at its new position.
+
+To bypass the ordering system simply supply a "by" option to the finder tags.
+
+
+== Notes
+
+- Requires Javascript
+- *** DOES NOT WORK IN (all versions of) SAFARI 2 ***
+  This is due to the fact that Radiants' own JS files do not work correctly under Safari 2
+
+
+== Version History
+
+# v0.3.2 - 18-11-2009
+- Made compatible with Radiant 0.8.1. This extension should now be compatible with at least version >= 0.6.9
+
+# v0.3.1 - 25-05-2009
+- FIX: if the move request takes some time to finish, the dragline now stays put when dropped instead of still being dragged along with the mouse.
+- Changed color of the row that is being dragged to fit better with default Radiant colors.
+- Small robustness-fix for cases when the rake migrate is forgotten.
+- Modified install instructions in README.
+
+# v0.3   - 16-03-2009
+- Incorporated copy functionality. When pressing Ctrl or Command, you can copy the item.
+- Fixed errors which occurred when trying to place two pages with the same slugs. Now, the second one is seen as a copy.
+- Fixed some JS errors.
+
+# v0.2.3 - 16-03-2009
+- v0.2.2. was not really compatible with Radiant > 0.6.9... This one should be compatible with versions both before and after 0.7.
+
+# v0.2.2 - 12-03-2009
+- Made compatible with Radiant > 0.6.9
+
+# v0.2.1 - 23-02-2009
+- Fixed JS bug that did not allow dragging of child pages which were loaded using AJAX after expanding a page.
+
+# v0.2   - 21-02-2009
+- Initial commit

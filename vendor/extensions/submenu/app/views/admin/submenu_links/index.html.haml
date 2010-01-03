@@ -1,0 +1,30 @@
+- include_stylesheet('admin/submenu')
+= render_region :top 
+
+%h1
+  Shortcuts
+
+%p
+  These are the little links that appear in the left-hand side of the submenu.
+  
+%table#submenu_links.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+  %thead
+    %tr
+      - render_region :thead do |thead|
+        - thead.name_header do
+          %th.link_name Link text
+        - thead.destination_header do
+          %th.link_destination Destination
+        - thead.flags_header do
+          %th.link_flags Belongs to
+        - thead.modify_header do
+          %th.modify Modify
+  %tbody
+    - @submenu_links.each do |link|
+      = render :partial => 'listed', :locals => {:link => link}
+      
+- render_region :bottom do |bottom|
+  - bottom.new_button do
+    - if admin?
+      %p
+        = link_to image('new-link', :alt => 'New Link'), new_admin_submenu_link_url, :title => "Create a new link"

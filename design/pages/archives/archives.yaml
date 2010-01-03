@@ -1,0 +1,14 @@
+--- 
+class_name: ""
+position: 5
+slug: archives
+updated_by_id: 1
+layout_name: <inherit> [Main]
+title: Archives
+virtual: false
+created_by_id: 1
+breadcrumb: Archives
+description: ""
+published_at: 2009-12-27 00:17:54 Z
+status_id: 100
+keywords: ""

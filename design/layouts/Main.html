@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <link href="/stylesheets/styles.css" type="text/css" rel="stylesheet" media="screen"/>
+    <link href="/stylesheets/reader.css" type="text/css" rel="stylesheet" media="screen"/>
+    <link rel="SHORTCUT ICON" href="images/old_logo.jpg"/>
+    <title>DCMB - <r:title/></title>
+  </head>
+
+
+  <body id="<r:slug/>">
+    <div id="container">
+
+      <div id="header">
+        <p id="andNow">And now,</p>
+        <p id="m-joke"><r:content part="m-joke" inherit="true"/></p>
+        <p id="dcmbTitle"> The Dartmouth College Marching Band!</p>
+      </div> <!-- end #header -->
+
+      <div id="navbar">
+        <ul>
+          <r:snippet name="nav"/>
+        </ul>
+      </div> <!-- end #navbar -->
+
+      <div id="content" class="clearfix">
+        <r:content/>
+      </div> <!-- end #content -->
+      
+      <div id="footer">
+        <p> </br> </p>
+      </div> <!-- end #footer-->
+      
+    </div> <!-- end #container -->
+  </body>
+</html>

@@ -1,0 +1,40 @@
+- content_for 'page_css' do
+  :sass
+    table#settings_index
+      span.label
+        color: #666
+        font-size: 1.2em
+    
+      div.nest-padding
+        width: 35px
+        height: 10px
+        float: left
+    
+      tr.spacer
+        td
+          background: #EAEAEA
+          height: 3px
+          padding: 0
+    p.new
+      a
+        color: #000
+        border: 1px solid #ddf
+        padding: 6px
+        text-decoration: none
+        &:hover
+          background: #efefff
+    
+- render_region :main do |main|
+  - main.top do
+    %h1 Radiant Settings
+  - main.list do
+    %table#settings_index.index
+      %tr
+        %th.key Setting Name
+        %th.value Value
+  
+      - @settings.each do |key, node|
+        = render_node key, node, :reset_depth => true
+    
+  - main.bottom do
+    %p.new= link_to "New Setting", new_admin_setting_url if admin?
