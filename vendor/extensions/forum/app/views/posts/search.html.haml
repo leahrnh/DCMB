@@ -1,0 +1,54 @@
+= render :partial => 'readers/flasher'
+
+#forum
+  #search
+
+  - if @searching
+    - if @posts.empty?
+      %p No messages found.
+
+    - else
+      %p
+        We found
+        = @posts.total_entries
+        = @description + ':'
+
+      - if @posts.previous_page
+        = paginate_and_summarise @posts, 'posts'
+
+      %ul.main
+        = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :hide_author => false, :preview => true}
+
+      = paginate_and_summarise @posts, 'posts'
+
+  - else
+    = render :partial => 'posts/search'
+
+- content_for :breadcrumbs do
+  = link_to 'Forum', topics_url
+  - if @searching
+    \&gt;
+    = link_to "Posts", posts_url
+    \&gt;
+    = @title
+  - else
+    \&gt;
+    Search
+
+- content_for :breadhead do
+  - if @searching
+    = link_to "Posts", posts_url, :class => 'breadhead'
+  - else
+    = link_to "Posts", topics_url, :class => 'breadhead'
+
+- content_for :pagetitle do
+  - if @searching
+    = @title || 'Search results'
+  - else
+    Search
+
+- content_for :feed do
+  = feed_link(search_posts_url(params.merge(:format => :rss))) if @searching
+
+- content_for :controls do
+  = render :partial => 'readers/controls'

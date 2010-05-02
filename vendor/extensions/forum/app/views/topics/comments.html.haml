@@ -1,0 +1,5 @@
+#forum
+  %h2 Comments
+
+  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false }
+  = render :partial => 'posts/reply'

@@ -1,0 +1,26 @@
+- with_error_report(@topic.errors.on(:name)) do
+  = form.label :name, 'Discussion title', :class => 'required'
+  %br
+  = form.text_field :name, :class => 'titular'
+  - if admin?
+    %br
+    %span.quiet
+      = form.check_box :sticky
+      %label{:for => 'topic_sticky', :class => 'admin'} Sticky
+      = form.check_box :locked
+      %label{:for => 'topic_locked', :class => 'admin'} Locked
+
+- with_error_report(@topic.errors.on(:body)) do
+  = form.label :name, 'Opening message'
+  %br
+  = form.text_area :body, :class=> 'standard', :rows => 12
+
+- unless @topic.page && !Radiant::Config['forum.comments_have_attachments']
+  = render :partial => 'posts/uploader', :locals => {:post => @topic.first_post}
+
+- if @topic.new_record? || admin?
+  - with_error_report(@topic.errors.on(:forum)) do
+    = form.label :forum_id, 'File in category:'
+    %br
+    = form.select :forum_id, Forum.visible.collect {|f| [ f.name, f.id ] }, :class=> 'standard'
+  

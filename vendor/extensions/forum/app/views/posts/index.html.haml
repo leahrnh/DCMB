@@ -1,0 +1,33 @@
+= render :partial => 'readers/flasher'
+
+#forum
+  - if @posts.empty?
+    %p No talk here yet.
+  - else
+    - if @posts.previous_page
+      = paginate_and_summarise @posts, 'posts'
+
+    %ul.main
+      = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
+
+    = paginate_and_summarise @posts, 'posts'
+
+- content_for :breadcrumbs do
+  = link_to 'Forum', topics_url
+  \&gt;
+  = @title
+
+- content_for :pagetitle do
+  Posts
+
+- content_for :breadhead do
+  = link_to "Forum", topics_url, :class => 'breadhead'
+
+- content_for :feed do
+  = feed_link(posts_path(:format => :rss))
+
+- content_for :controls do
+  = render :partial => 'readers/controls'
+
+- content_for :help do
+  = render :partial => 'topics/help'

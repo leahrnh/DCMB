@@ -1,0 +1,6 @@
+.post_wrapper
+  .post_body
+    = form.text_area :body, :rows => 10, :class => 'post_body'
+
+    - unless @topic.page && !Radiant::Config['forum.comments_have_attachments']
+      = render :partial => 'posts/uploader'

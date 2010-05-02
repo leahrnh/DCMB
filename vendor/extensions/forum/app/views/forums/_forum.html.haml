@@ -1,0 +1,22 @@
+%li.forum{:id => forum.dom_id}
+  %span.subject
+    %a{:href => forum_url(forum), :class => 'main'}
+      = forum.name
+  - if topic = forum.recent_topics.first
+    %span.context
+      = forum.topics.count
+      = pluralize forum.topics.count, "discussions"
+      containing
+      = forum.posts.count
+      messages,
+      %br
+      most recently in
+      = link_to topic.name, forum_topic_url(forum, topic)
+      = time_ago_in_words(topic.replied_at || topic.created_at)
+      ago.
+  - else 
+    %span.context
+      No posts yet.
+  %div.preview
+    = truncate_and_textilize(forum.description, 40)
+    

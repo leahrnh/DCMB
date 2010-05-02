@@ -1,0 +1,45 @@
+= render :partial => 'readers/flasher'
+
+#forum
+  - if @posts.previous_page
+    = paginate_and_summarise @posts, 'comments'
+
+  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first_post => @topic.posts.first }
+
+  - if @posts.next_page
+    = paginate_and_summarise @posts, 'comments'
+  - else
+    - if @topic.page
+      = link_to "Post a reply", new_topic_post_url(@topic), :class => 'inviting remote_content'
+    - else
+      = render :partial => 'posts/reply'
+
+- content_for :pagetitle do
+  = @topic.name
+
+- content_for :credits do
+  %p.context
+    posted by
+    = link_to @topic.reader.name, reader_url(@topic.reader)
+    = friendly_date(@topic.created_at)
+    in
+    = link_to @topic.forum.name + '.', forum_url(@topic.forum), {:class => 'breadhead'}
+
+- content_for :mugshot do
+  = gravatar_for(@topic.reader, {:size => 42}, {:alt => @topic.reader.name, :class => 'gravatar'})
+
+- content_for :feed do
+  = feed_link(topic_path(@topic, :format => :rss))
+
+- content_for :controls do
+  = render :partial => 'readers/controls'
+
+- content_for :breadhead do
+  = link_to @forum.name, forum_url(@forum), :class => 'breadhead'
+
+- content_for :breadcrumbs do
+  = link_to 'Forum', topics_url
+  \&gt;
+  = link_to @forum.name, forum_url(@forum) 
+  \&gt;
+  = @topic.name
