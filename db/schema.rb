@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.integer   "original_height"
     t.string    "original_extension"
     t.integer   "site_id"
+    t.boolean   "furniture",          :default => false
   end
 
   create_table "config", :force => true do |t|
