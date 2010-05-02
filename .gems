@@ -6,3 +6,5 @@ sanitize
 will_paginate --version '>= 2.3.11'
 acts_as_list
 responds_to_parent
+haml
+hassle

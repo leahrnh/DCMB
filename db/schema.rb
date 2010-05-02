@@ -271,6 +271,26 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
 
   add_index "submenu_links", ["site_id", "user_id"], :name => "index_links_by_site_and_user"
 
+  create_table "taggings", :force => true do |t|
+    t.integer "tag_id"
+    t.string  "tagged_type"
+    t.integer "tagged_id"
+  end
+
+  add_index "taggings", ["tag_id", "tagged_id", "tagged_type"], :name => "index_taggings_on_tag_id_and_tagged_id_and_tagged_type", :unique => true
+
+  create_table "tags", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "site_id"
+  end
+
+  add_index "tags", ["title"], :name => "index_tags_on_title", :unique => true
+
   create_table "topics", :force => true do |t|
     t.integer  "forum_id"
     t.integer  "site_id"
