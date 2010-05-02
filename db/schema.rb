@@ -21,6 +21,10 @@ ActiveRecord::Schema.define(:version => 20081203140407) do
     t.integer   "updated_by_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.integer   "original_width"
+    t.integer   "original_height"
+    t.string    "original_extension"
+    t.integer   "site_id"
   end
 
   create_table "config", :force => true do |t|

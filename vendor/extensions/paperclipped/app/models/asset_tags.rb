@@ -1,5 +1,6 @@
 module AssetTags
   include Radiant::Taggable
+  include ActionView::Helpers::NumberHelper
   
   class TagError < StandardError; end
   
@@ -17,10 +18,12 @@ module AssetTags
 
   desc %{
     Cycles through all assets attached to the current page.  
-    This tag does not require the title atttribute, nor do any of its children.
+    This tag does not require the title attribute, nor do any of its children.
     Use the `limit' and `offset` attribute to render a specific number of assets.
     Use `by` and `order` attributes to control the order of assets.
     Use `extensions` attribute to specify which assets to be rendered.
+    
+    Use r:assets:all if you want the list of all assets.
     
     *Usage:* 
     <pre><code><r:assets:each [limit=0] [offset=0] [order="asc|desc"] [by="position|title|..."] [extensions="png|pdf|doc"]>...</r:assets:each></code></pre>
@@ -28,7 +31,26 @@ module AssetTags
   tag 'assets:each' do |tag|
     options = tag.attr.dup
     result = []
-    assets = tag.locals.page.assets.find(:all, assets_find_options(tag))
+    tag.locals.assets = tag.locals.page.assets.scoped(assets_find_options(tag))
+    tag.render('asset_list', tag.attr.dup, &tag.block)
+  end
+  
+  desc %{
+    Cycles through all assets available on the site.  
+    This tag does not require the title attribute, nor do any of its children.
+    Use the `limit' and `offset` attribute to render a specific number of assets.
+    Use `by` and `order` attributes to control the order of assets.
+    Use `extensions` attribute to specify which assets to be rendered.
+    
+    Use r:assets:each if you want the list of assets attached to the present page.
+    
+    *Usage:* 
+    <pre><code><r:assets:all [limit=0] [offset=0] [order="asc|desc"] [by="position|title|..."] [extensions="png|pdf|doc"]>...</r:assets:all></code></pre>
+  }    
+  tag 'assets:all' do |tag|
+    options = tag.attr.dup
+    result = []
+    assets = Asset.find(:all, assets_find_options(tag))
     assets.each do |asset|
       tag.locals.asset = asset
       result << tag.expand
@@ -43,91 +65,129 @@ module AssetTags
     <pre><code><r:assets:first>...</r:assets:first></code></pre>
   }
   tag 'assets:first' do |tag|
-     attachments = tag.locals.page.page_attachments
-     if first = attachments.first
-       tag.locals.asset = first.asset
-       tag.expand
-     end
-   end
-   
-   tag 'assets:if_first' do |tag|
-     attachments = tag.locals.assets
-     asset = tag.locals.asset
-     if asset == attachments.first.asset
-       tag.expand
-     end
-   end
-   
-   desc %{
-     Renders the contained elements only if the current contextual page has one or
-     more assets. The @min_count@ attribute specifies the minimum number of required
-     assets. You can also filter by extensions with the @extensions@ attribute.
+    attachments = tag.locals.page.page_attachments
+    if first = attachments.first
+      tag.locals.asset = first.asset
+      tag.expand
+    end
+  end
 
-     *Usage:*
-     <pre><code><r:if_assets [min_count="n"] [extensions="pdf|jpg"]>...</r:if_assets></code></pre>
-   }
-   tag 'if_assets' do |tag|
-     count = tag.attr['min_count'] && tag.attr['min_count'].to_i || 1
-     assets = tag.locals.page.assets.count(:conditions => assets_find_options(tag)[:conditions])
-     tag.expand if assets >= count
-   end
-   
-   desc %{
-     The opposite of @<r:if_attachments/>@.
-   }
-   tag 'unless_assets' do |tag|
-     count = tag.attr['min_count'] && tag.attr['min_count'].to_i || 1
-     assets = tag.locals.page.assets.count(:conditions => assets_find_options(tag)[:conditions])
-     tag.expand unless assets >= count
-   end
+  tag 'assets:if_first' do |tag|
+    attachments = tag.locals.assets
+    asset = tag.locals.asset
+    if asset == attachments.first.asset
+      tag.expand
+    end
+  end
 
+  desc %{
+    Renders the contained elements only if the current contextual page has one or
+    more assets. The @min_count@ attribute specifies the minimum number of required
+    assets. You can also filter by extensions with the @extensions@ attribute.
+
+    *Usage:*
+    <pre><code><r:if_assets [min_count="n"] [extensions="pdf|jpg"]>...</r:if_assets></code></pre>
+  }
+  tag 'if_assets' do |tag|
+    count = tag.attr['min_count'] && tag.attr['min_count'].to_i || 1
+    assets = tag.locals.page.assets.count(:conditions => assets_find_options(tag)[:conditions])
+    tag.expand if assets >= count
+  end
+
+  desc %{
+    The opposite of @<r:if_assets/>@.
+  }
+  tag 'unless_assets' do |tag|
+    count = tag.attr['min_count'] && tag.attr['min_count'].to_i || 1
+    assets = tag.locals.page.assets.count(:conditions => assets_find_options(tag)[:conditions])
+    tag.expand unless assets >= count
+  end
+
+  desc %{
+    Renders the value for a top padding for the image. Put the image in a container with specified height and using this tag you can vertically align the image within it's container.
+
+    *Usage*:
+    <pre><code><r:assets:top_padding container = "140" [size="icon"]/></code></pre>
+
+    *Working Example*:
+    <pre><code>
+      <ul>
+        <r:assets:each>
+          <li style="height:140px">
+            <img style="padding-top:<r:top_padding size='category' container='140' />px" 
+                 src="<r:url />" alt="<r:title />" />
+          </li>
+        </r:assets:each>
+      </ul>
+    </code></pre>
+  }
+  tag "assets:top_padding" do |tag|
+    raise TagError, "'container' attribute required" unless tag.attr['container']
+    options = tag.attr.dup
+    asset = find_asset(tag, options)
+    if asset.image?
+      size = options['size'] ? options.delete('size') : 'icon'
+      container = options.delete('container')
+      img_height = asset.height(size)
+      (container.to_i - img_height.to_i)/2
+    else
+      raise TagError, "Asset is not an image"
+    end
+  end
+
+  ['height','width'].each do |att|
     desc %{
-      Renders the value for a top padding for the image. Put the image in a container with specified height and using this tag you can vertically align the image within it's container.
-
-      *Usage*:
-      <pre><code><r:assets:top_padding container = "140" [size="icon"]/></code></pre>
-
-      *Working Example*:
-      <pre><code>
-        <ul>
-          <r:assets:each>
-            <li style="height:140px">
-              <img style="padding-top:<r:top_padding size='category' container='140' />px" 
-                   src="<r:url />" alt="<r:title />" />
-            </li>
-          </r:assets:each>
-        </ul>
-      </code></pre>
+      Renders the #{att} of the asset.
     }
-    tag "assets:top_padding" do |tag|
-      raise TagError, "'container' attribute required" unless tag.attr['container']
+    tag "assets:#{att}" do |tag|
       options = tag.attr.dup
       asset = find_asset(tag, options)
       if asset.image?
-        size = options['size'] ? options.delete('size') : 'icon'
-        container = options.delete('container')
-        img_height = asset.height(size)
-        (container.to_i - img_height.to_i)/2
+        size = options['size'] ? options.delete('size') : 'original'
+        asset.send(att, size)
       else
         raise TagError, "Asset is not an image"
       end
     end
-   
-    ['height','width'].each do |att|
-      desc %{
-        Renders the #{att} of the asset.
-      }
-      tag "assets:#{att}" do |tag|
-        options = tag.attr.dup
-        asset = find_asset(tag, options)
-        if asset.image?
-          size = options['size'] ? options.delete('size') : 'original'
-          asset.send(att, size)
-        else
-          raise TagError, "Asset is not an image"
-        end
-      end
+  end
+
+  desc %{
+    Returns 'vertical', 'horizontal' or 'square', provided the asset is an image.
+  }
+  tag "assets:shape" do |tag|
+    options = tag.attr.dup
+    tag.locals.asset = find_asset(tag, options)
+    tag.locals.asset.shape
+  end
+
+  ['vertical','horizontal', 'square'].each do |property|
+    desc %{
+      Expands only if the asset is an image and the image file is #{property}.
+    }
+    tag "assets:if_#{property}" do |tag|
+      options = tag.attr.dup
+      tag.locals.asset = find_asset(tag, options)
+      tag.expand if tag.locals.asset.image? && tag.locals.asset.send("#{property}?".intern)
     end
+    
+    desc %{
+      Expands  if the asset is not an image or the image file is not #{property}.
+    }
+    tag "assets:unless_#{property}" do |tag|
+      options = tag.attr.dup
+      tag.locals.asset = find_asset(tag, options)
+      tag.expand if !tag.locals.asset.image? || !tag.locals.asset.send("#{property}?".intern)
+    end
+  end
+  
+  desc %{
+    Returns 'vertical', 'horizontal' or 'square', provided the asset is an image.
+  }
+  tag "assets:filesize" do |tag|
+    options = tag.attr.dup
+    asset = find_asset(tag, options)
+    number_to_human_size(asset.asset_file_size, :precision => 2)
+  end
 
   desc %{
     Renders the containing elements only if the asset's content type matches the regular expression given in the matches attribute.
@@ -145,7 +205,7 @@ module AssetTags
     asset_content_type = tag.locals.asset.asset_content_type
     tag.expand unless asset_content_type.match(regexp).nil?
   end
-  
+    
   [:title, :caption, :asset_file_name, :asset_content_type, :asset_file_size, :id].each do |method|
     desc %{
       Renders the `#{method.to_s}' attribute of the asset.     
@@ -157,7 +217,7 @@ module AssetTags
       asset.send(method) rescue nil
     end
   end
-  
+
   tag "assets:filename" do |tag|
     options = tag.attr.dup
     asset = find_asset(tag, options)
@@ -176,17 +236,13 @@ module AssetTags
     asset = find_asset(tag, options)
     if asset.image?
       size = options['size'] ? options.delete('size') : 'original'
-      geometry = options['geometry'] ? options.delete('geometry') : nil
-      #This is very exoerimental and will generate new sizes on the fly
-      asset.generate_style(size, { :size => geometry }) if geometry
-      
       alt = " alt='#{asset.title}'" unless tag.attr['alt'] rescue nil
       attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
       attributes << alt unless alt.nil?
       url = asset.thumbnail(size)
       %{<img src="#{url}" #{attributes unless attributes.empty?} />} rescue nil
     else
-      raise TagError, "Asset is not an image"
+      raise TagError, "Asset #{asset.id} is not an image"
     end
   end
   desc %{
@@ -230,10 +286,11 @@ module AssetTags
   end
   
   tag 'assets:thumbnail' do |tag|
-    options = tag.attr.dup
-    asset = find_asset(tag, options)
-    asset.generate_thumbnail('test', ['24x24#',nil])
-    asset.save    
+    tag.render('assets:url', tag.attr.dup.merge('size' => 'thumbnail'))
+  end
+
+  tag 'assets:icon' do |tag|
+    tag.render('assets:url', tag.attr.dup.merge('size' => 'icon'))
   end
   
   desc %{
@@ -297,10 +354,31 @@ module AssetTags
     asset.asset_file_name[/\.(\w+)$/, 1]
   end
   
+  # simple, general purpose asset lister, useful because the assets:each tag resets tag.local.assets
+  # and often we would rather use a collection that has already been selected
+  # tag.locals.assets would normally contain an unfound scope when this tag is rendered
+
+  tag 'asset_list' do |tag|
+    raise TagError, "r:asset_list: no assets to list" unless tag.locals.assets
+    options = tag.attr.symbolize_keys
+    result = []
+    pagination = pagination_control(tag)
+    assets = pagination ? tag.locals.assets.paginate(pagination) : tag.locals.assets.all
+    assets.each do |asset|
+      tag.locals.asset = asset
+      result << tag.expand
+    end
+    if pagination && assets.total_pages > 1
+      tag.locals.paginated_list = assets
+      result << tag.render('pagination')
+    end
+    result
+  end
+    
   private
     
     def find_asset(tag, options)
-      raise TagError, "'title' attribute required" unless title = options.delete('title') or id = options.delete('id') or tag.locals.asset
+      raise TagError, "'title' or 'id' attribute required" unless title = options.delete('title') or id = options.delete('id') or tag.locals.asset
       tag.locals.asset || Asset.find_by_title(title) || Asset.find(id)
     end
     

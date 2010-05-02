@@ -1,4 +1,11 @@
 = render_region :form_top
+
+- if @asset.errors.any?
+  %p.haserror
+    Sorry: there were problems:
+    %br
+    = @asset.errors.full_messages
+
 - render_region :form do |form|
   - form.edit_title do
     %p.title

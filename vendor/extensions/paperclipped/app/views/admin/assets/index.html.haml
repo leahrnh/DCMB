@@ -10,9 +10,6 @@
       Assets and images can be uploaded and then attached or inserted into pages, snippets and layouts. 
       Click on a asset name below to edit it or click <code>Remove</code> to delete it.
 
-  - preamble.new_button do
-    %p= link_to image_tag('assets/new-asset.png', :alt => 'New Asset'), new_admin_asset_path
-
   - preamble.filters do
     %p
       - form_tag(admin_assets_path,:id => 'filesearchform', :method => 'get') do
@@ -48,3 +45,9 @@
         You can regenerate all thumbnails here. Beware that this will take a while and consume considerable resources on your server. 
       - form_tag refresh_admin_assets_path do
         %input.button{ :type => "submit", :value => "Regenerate" }
+
+  - bottom.buttons do
+    #actions
+      = will_paginate @assets
+      %ul
+        %li= link_to image('plus') + " " + "new asset", new_admin_asset_path

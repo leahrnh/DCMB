@@ -9,16 +9,8 @@
     - form_for :asset, :url => admin_asset_path(@asset), :html => { :method => "put", :multipart => true } do |f|
       .form-area
         = render :partial => "form", :locals => { :f => f }
-  
-        %p.content
-          %label.filename
-            = "Filename: #{@asset.asset_file_name unless @asset.new_record?}"
-          .asset
-            - if @asset.image?
-              = image_tag @asset.thumbnail(Radiant::Config['assets.display_size'].to_sym)
-            - else
-              = link_to image_tag(@asset.thumbnail(:thumbnail)), @asset.asset.url
-          = updated_stamp @asset
+        = render :partial => "show"
+        = updated_stamp @asset
       
         %p.upload
           %label.upload Replace File

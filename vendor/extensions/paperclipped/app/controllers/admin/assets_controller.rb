@@ -2,7 +2,7 @@ class Admin::AssetsController < Admin::ResourceController
   skip_before_filter :verify_authenticity_token, :only => :create
     
   def index 
-    @assets = Asset.search(params[:search], params[:filter], params[:page])
+    @assets = Asset.search(params[:search], params[:filter]).paginate(pagination_parameters)
     @page = Page.find(params[:asset_page]) if params[:asset_page]
 
     respond_to do |format|
@@ -25,7 +25,6 @@ class Admin::AssetsController < Admin::ResourceController
         @page = Page.find(params[:page])
         @asset.pages << @page
       end
-      
       respond_to do |format|
         format.html { 
           flash[:notice] = "Asset successfully uploaded."
@@ -43,6 +42,13 @@ class Admin::AssetsController < Admin::ResourceController
             end
           end
         } 
+      end
+    else
+      respond_to do |format|
+        format.html { 
+          flash[:error] = "Sorry: asset could not be saved."
+          render :action => 'new'
+        }
       end
     end
   end
