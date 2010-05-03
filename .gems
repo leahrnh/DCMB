@@ -8,3 +8,4 @@ acts_as_list
 responds_to_parent
 haml
 hassle
+paperclip --version '~> 2.3'

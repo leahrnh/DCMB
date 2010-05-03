@@ -26,7 +26,7 @@ class PaperclippedExtension < Radiant::Extension
   end
   
   extension_config do |config|
-    # config.gem 'paperclip', :version => '~> 2.3', :source => 'http://gemcutter.org'
+    config.gem 'paperclip', :version => '~> 2.3', :source => 'http://gemcutter.org'
     config.gem 'acts_as_list', :source => 'http://gemcutter.org'
     config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
     config.gem 'responds_to_parent', :source => 'http://gemcutter.org'
