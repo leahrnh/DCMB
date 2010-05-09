@@ -19,7 +19,7 @@ class ReadersController < ReaderActionController
     respond_to do |format|
       format.html { 
         if @reader.inactive? && @reader == current_reader
-          redirect_to reader_activation_url(current_reader)
+          redirect_to reader_activation_url
         else
           render
         end
@@ -90,6 +90,7 @@ protected
   end
 
   def restrict_to_self
+    flash[:error] = "Sorry. You are not allowed to edit other people's accounts." if params[:id] && params[:id] != current_reader.id
     @reader = current_reader
   end
   
@@ -100,7 +101,7 @@ protected
     @reader.attributes = params[:reader]
     @reader.valid?
     
-    flash[:error] = 'Wrong password.'
+    flash[:error] = 'Sorry. Wrong password.'
     @reader.errors.add(:current_password, "was not correct")
     render :action => 'edit' and return false
   end

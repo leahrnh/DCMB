@@ -1,6 +1,5 @@
 class ReaderSessionsController < ReaderActionController
 
-  no_login_required
   before_filter :require_reader, :only => :destroy
   radiant_layout { |controller| controller.layout_for :reader }
   
@@ -16,11 +15,13 @@ class ReaderSessionsController < ReaderActionController
         @reader_session.reader.save(false)
       end
       respond_to do |format|
-        format.html { 
+        format.html {
           flash[:notice] = "Hello #{@reader_session.reader.name}. Welcome back."
           redirect_back_or_to default_loggedin_url
         }
-        format.js { redirect_back_with_format(:js) }
+        format.js { 
+          redirect_back_with_format(:js) 
+        }
       end
       
     else
