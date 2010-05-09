@@ -828,3 +828,84 @@ repositories:
   url: http://github.com/jgarber/radiant-no_dev_cache-extension
   description: When caching was switched to Rack::Cache in Radiant 0.8 the bit where it wouldn't cache in dev mode was left out. This puts it back in.
   owner: jgarber
+
+- name: radiant-library-extension
+  url: http://github.com/spanner/radiant-library-extension
+  description: Uses taggable to create a faceted retrieval page for pictures, pages and any other tagged items
+  owner: spanner
+- name: radiant-raidprogress-extension
+  url: http://github.com/sdegoeij/radiant-library-extension
+  description: An World of Warcraft raid progress extension for Radiant 0.9+.
+  owner: sdegoeij
+- name: radiant-raidprogress-extension
+  url: http://github.com/sdegoeij/radiant-raidprogress-extension
+  description: An World of Warcraft raid progress extension for Radiant 0.9+.
+  owner: sdegoeij
+- name: radiant_session_management
+  url: http://github.com/sandipransing/radiant_session_management
+  description: Session Management allows us to track user information
+  owner: sandipransing
+- name: random_child
+  url: http://github.com/acrookston/random_child
+  description: RandomChild adds a tag called <r:children:random> that works similar to <r:children:each> yet randomizes the order of the child pages.
+  owner: acrookston
+- name: Radiant-Less
+  url: http://github.com/rk/Radiant-Less
+  description: Enables the use of LESS CSS to interpret Less to CSS, letting you use things like expressions, nested code, and variables and mixins to simplify your CSS.
+  owner: rk
+- name: jp_mailer
+  url: http://github.com/shunsuk/jp_mailer
+  description: Extends Mailer Extension to send Japanese mails.
+  owner: shunsuk
+- name: radiant-cy-image-extension
+  url: http://github.com/ConstantineYurevich/radiant-cy-image-extension
+  description: CyImage extension can be used to implement on-fly image resizing using ImageMagick directly on your Radiant pages.
+  owner: ConstantineYurevich
+- name: radiant-employees-directory
+  url: http://github.com/jpemberthy/radiant-employees-directory
+  description: A Radiant Extension that adds employees management. Employees have name, email, profile, extended profile and more fields.
+  owner: jpemberthy
+- name: radiant-google-analytics-extension
+  url: http://github.com/amrnt/radiant-google-analytics-extension
+  description: no description
+  owner: amrnt
+- name: business
+  url: http://github.com/asiansteev/business
+  description: Business Directory Extension for Radiant
+  owner: asiansteev
+- name: radiant-guestbooks
+  url: http://github.com/scullygroup/radiant-guestbooks
+  description: Radiant extension that allows you to create a guestbook of comments
+  owner: scullygroup
+- name: radiant-flickr_pages
+  url: http://github.com/scullygroup/radiant-flickr_pages
+  description: A Radiant extension that allows you to create paginated Flickr galleries on a page
+  owner: scullygroup
+- name: radiant-bookings
+  url: http://github.com/scullygroup/radiant-bookings
+  description: Radiant extension that connects with Resmark web services
+  owner: scullygroup
+- name: radiant-dev-login-extension
+  url: http://github.com/aughr/radiant-dev-login-extension
+  description: Requires admin login to use Radiant's dev mode.
+  owner: aughr
+- name: radiant-audit-extension
+  url: http://github.com/digitalpulp/radiant-audit-extension
+  description: Audit provides an extensible framework for auditing and logging admin interactions as well as a UI for reviewing and searching audited events.
+  owner: digitalpulp
+- name: radiant-asset_packager-extension
+  url: http://github.com/nelstrom/radiant-asset_packager-extension
+  description: An asset packager for Radiant, allowing you to server minified css and js files from your public directory.
+  owner: nelstrom
+- name: radiant-paperclipped_meta-extension
+  url: http://github.com/nuex/radiant-paperclipped_meta-extension
+  description: Assign metadata to paperclipped assets in Radiant CMS.
+  owner: nuex
+- name: radiant-capistrano-extension
+  url: http://github.com/ehaselwanter/radiant-capistrano-extension
+  description: An Extension providing some useful capistrano recipes for radiant
+  owner: ehaselwanter
+- name: Radiant-Eventable
+  url: http://github.com/threehv/Radiant-Eventable
+  description: A simple extension to Radiant CMS that makes an "event feed" page available within your administration section
+  owner: threehv

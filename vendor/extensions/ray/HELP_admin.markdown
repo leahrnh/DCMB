@@ -56,7 +56,7 @@ Usage
 Bugs & feature requests
 ---
 
-Bug reports and feature requests can be created at [Ray's Lighthouse page][bugs]. When filing bugs please include your Radiant and Ray versions, and if appropriate the GitHub URL of the extension you're having trouble with. *Don't forget to add yourself to the watchers list on tickets you file in case I need to follow up*.
+Bug reports and feature requests can be created on [Ray's Issue page][bugs]. When filing bugs please include your Radiant and Ray versions, and if appropriate the GitHub URL of the extension you're having trouble with.
 
-[bugs]: http://jmm.lighthouseapp.com/projects/23552/tickets/new
+[bugs]: http://github.com/johnmuhl/radiant-ray-extension/issues
 [docs]: http://johnmuhl.github.com/radiant-ray-extension/
