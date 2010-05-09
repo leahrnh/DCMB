@@ -3,6 +3,8 @@
 Created by: Sean Cribbs (seancribbs AT gmail DOT com), September 20, 2007
 Updated to work with 0.8 RC1 by: Johannes Fahrenkrug (http://springenwerk.com), May 22, 2009
 
+This version extended by will to handle mailers too and to provide a `layout_for` method.
+
 Allows Rails controllers/actions and mailers to use Radiant layouts as their "layout".  
 content_for blocks are mapped to page parts, with the exception of :title and
 :breadcrumbs, which map to their specific default tags. The default content, or 
@@ -15,6 +17,12 @@ content_for blocks are mapped to page parts, with the exception of :title and
 -or-
 
   radiant_layout { |controller| # some code to determine layout name }
+
+-or-
+
+	radiant_layout { |controller| layout_for :calendar }
+	
+which will use the layout name specified in the `calendar.layout` config item then default to 'Main' or the first layout it can find.
 
 == What to do in your mailers
 
