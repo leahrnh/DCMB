@@ -60,6 +60,8 @@ Radiant::Initializer.run do |config|
   config.middleware.use ::Radiant::Cache,
     :entitystore => "radiant:tmp/cache/entity",
     :metastore => "radiant:tmp/cache/meta"
+  
+  config.middleware.use "Hassle"
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
