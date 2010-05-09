@@ -14,22 +14,13 @@ class SettingsExtension < Radiant::Extension
   
   def activate
     Radiant::Config.extend ConfigFindAllAsTree
-    Radiant::Config.send :include, ConfigProtection
+    Radiant::Config.class_eval { include ConfigProtection }
     
-    if Radiant::Config['roles.settings']
-      config_roles = Radiant::Config['roles.settings']
-      roles = []
-      roles << :developer if config_roles.include?('developer')
-      roles << :admin if config_roles.include?('admin')
-      if config_roles.include?('all')
-        roles = [:all]
-      end
+    tab 'Settings' do
+      add_item 'Application', '/admin/settings', :after => 'Extensions'
     end
-    admin.tabs.add "Settings", "/admin/settings", :after => "Layouts" , :visibility => roles
     
-    Page.class_eval {
-      include SettingsTags
-    }
+    Page.class_eval { include SettingsTags }
     
     Radiant::AdminUI.class_eval do
       attr_accessor :settings
@@ -38,13 +29,14 @@ class SettingsExtension < Radiant::Extension
   end
   
   def deactivate
-    admin.tabs.remove "Settings"
   end
   
   def load_default_settings_regions
     returning OpenStruct.new do |settings|
       settings.index = Radiant::AdminUI::RegionSet.new do |index|
-        index.main.concat %w{top list bottom}
+        index.top.concat %w{}
+        index.main.concat %w{list}
+        index.bottom.concat %w{new_button}
       end
     end
   end
