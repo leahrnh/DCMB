@@ -11,6 +11,7 @@ require 'radius'
 
 Radiant::Initializer.run do |config|
   config.gem 'authlogic'
+  config.gem 'hassle'
   
   # Skip frameworks you're not going to use (only works if using vendor/rails).
   # To use Rails without a database, you must remove the Active Record framework
