@@ -19,6 +19,7 @@ class ShareLayoutsExtension < Radiant::Extension
     
     RailsPage
     ActionView::Base.send :include, ShareLayouts::Helper
+    ApplicationController.send :include, ShareLayouts::ControllerExtensions
   end
   
   def deactivate

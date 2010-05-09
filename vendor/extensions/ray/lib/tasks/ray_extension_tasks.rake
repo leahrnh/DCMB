@@ -149,14 +149,11 @@ def install_extension
   search_extensions(show = nil)
   replace_github_username if ENV["hub"]
   replace_extension_name if ENV["fullname"]
-  determine_install_path # cancels installation if extension exists
-
   if ENV["lib"]
     @gem_dependencies = [ENV["lib"]]
     install_dependencies
   end
-  git_extension_install if @download == "git"
-  http_extension_install if @download == "http"
+  determine_install_path # cancels installation if extension exists
   check_submodules
   check_dependencies
   run_extension_tasks
@@ -321,7 +318,7 @@ def git_extension_install
   if File.exist?(".git/HEAD")
     sh("git submodule -q add #{@url}.git #{@p}/#{@name}")
   else
-    sh("git clone -q #{@url}.git #{@p}/#{@name}")
+    sh("git clone -q #{@url}.git #{@r}/tmp/#{@name}")
   end
 end
 
@@ -352,12 +349,8 @@ def http_extension_install
     end
     rm("#{@name}.tar.gz")
   end
-  sh("mv #{@r}/tmp/* #{@p}/#{@name}")
-  remove_dir("#{@r}/tmp")
-  if File.exist?("#{@p}/#{@name}/.gitmodules")
-    check_submodules
-    rm("#{@p}/#{@name}/.gitmodules")
-  end
+  @name = Dir.entries("#{@r}/tmp") - ['.', '..', '.DS_Store']
+  @http = true
 end
 
 def git_extension_update(name)
@@ -766,15 +759,16 @@ def show_search_results(term, extensions, authors, urls, descriptions)
 end
 
 def choose_extension_to_install(name, extensions, authors, urls, descriptions)
+  @name = ENV['name']
   if extensions.length == 1
     @url = urls[0]
     return
   end
   if extensions.include?(name) or extensions.include?("radiant-#{name}-extension")
     extensions.each do |e|
-      e.gsub!(/radiant[-|_]/, "").gsub!(/[-|_]extension/, "")
+      extension_name = e.gsub(/radiant[-|_]/, "").gsub(/[-|_]extension/, "")
       @url = urls[extensions.index(e)]
-      break if e == name
+      break if extension_name == name
     end
   elsif extensions.length == 0
     @blind_luck = true
@@ -909,42 +903,45 @@ end
 
 def determine_install_path
   FileUtils.makedirs("#{@r}/tmp")
-  # download an html list of the repository contents
-  begin
-    html = open("#{@url}.git", "User-Agent" => "open-uri").read
-  rescue OpenURI::HTTPError
-    if @blind_luck
-      messages = [
-        "No extension could be found at:",
-        "#{@url}",
-        "Check the URL for a hint about what's going on."
-      ]
-    else
-      messages = ["GitHub is having trouble serving the request, try again."]
-    end
-    output(messages)
-    exit
+  # download repository contents
+  git_extension_install if @download == "git"
+  http_extension_install if @download == "http"
+  @name = directory_name if @download == "http"
+  if @blind_luck
+    messages = [
+      "No extension could be found at: ",
+      "#{@url}",
+      "Check the URL for a hint about what's going on."
+    ]
+  else
+    messages = ["GitHub is having trouble serving the request, try again."]
   end
-  open("#{@r}/tmp/#{ENV["name"]}.html", "w") { |f| f.write(html) }
-  # inspect the html list to determine the install path
-  name = []
-  File.readlines("#{@p}/ray/tmp/#{ENV["name"]}.html").map do |f|
-    line = f.rstrip
-    name << line if line.include?("_extension.rb")
+
+  # find vendor/extensions/ray/tmp/ext_name/ext_name_extension.rb
+  unless @download == "git" && File.exist?(".git/HEAD")
+    extension_files = Dir.entries("#{@r}/tmp/#{@name}") - ['.','..','.DS_Store']
+    extension_files.each { |f|
+      @name = f.gsub(/(.*)_extension.rb/, "\\1") if f =~ /.*_extension.rb/
+    }
+    check_for_existing_installation
   end
-  @name = name[0].to_s
-  @name.strip!.gsub!(/<li> <a href=".*">/, "").gsub!(/<\/a> <\/li>/, "").gsub!(/_extension.rb/, "")
-  remove_dir("#{@r}/tmp")
-  check_for_existing_installation
 end
 
 def check_for_existing_installation
   if File.exist?("#{@p}/#{@name}")
-    messages = [
-      "The #{@name} extension is already installed."
-    ]
+    remove_dir("#{@r}/tmp")
+    messages = [ "The #{@name} extension is already installed." ]
     output(messages)
     exit
+  else
+    mv("#{@r}/tmp/#{ENV['name']}", "#{@p}/#{@name}")
+    remove_dir("#{@r}/tmp")
+    if @http
+      if File.exist?("#{@p}/#{@name}/.gitmodules")
+        check_submodules
+        rm("#{@p}/#{@name}/.gitmodules")
+      end
+    end
   end
 end
 
