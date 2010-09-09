@@ -66,7 +66,7 @@ class ReaderGroupExtension < Radiant::Extension
   end
   
   def deactivate
-    admin.tabs.remove "Groups"
+    admin.tabs.remove "Groups" unless respond_to? :tab
   end
   
 end

@@ -27,4 +27,6 @@ paperclipped:
       config.gem 'paperclip', :version => '~> 2.3', :source => 'http://gemcutter.org'
       (also removed vendor/plugins/paperclip from extension)
     added Paperclip::Railtie.insert
-      
+
+reader_group and forum:
+  added "unless respond_to? :tab" in deactivate

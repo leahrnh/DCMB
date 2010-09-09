@@ -64,7 +64,7 @@ class ForumExtension < Radiant::Extension
   end
   
   def deactivate
-    admin.tabs.remove "Forum"
+    admin.tabs.remove "Forum" unless respond_to? :tab
   end
   
 end
