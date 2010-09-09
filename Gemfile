@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+gem 'rails', '2.3.8' # not actually needed, but Heroku wants it 'cause they think this is a Rails app
 gem 'radiant', '0.9.1'
 gem 'rdiscount','>= 1.3.5'
 gem 'authlogic', '>= 2.1.2'
