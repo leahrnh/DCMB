@@ -12,3 +12,19 @@ taggable:
           self.attached_tags = Tag.from_list(keys) || []
         end
       end
+
+paperclipped:
+  in paperclipped_extension.rb:
+    from:
+      description "Assets extension based on the lightweight Paperclip plugin."
+      url "http://github.com/kbingman/paperclipped"
+    to:
+      description "Assets extension based on the lightweight Paperclip plugin (spanner fork)."
+      url "http://github.com/spanner/paperclipped"
+    from:
+      # config.gem 'paperclip', :version => '~> 2.3', :source => 'http://gemcutter.org'
+    to:
+      config.gem 'paperclip', :version => '~> 2.3', :source => 'http://gemcutter.org'
+      (also removed vendor/plugins/paperclip from extension)
+    added Paperclip::Railtie.insert
+      

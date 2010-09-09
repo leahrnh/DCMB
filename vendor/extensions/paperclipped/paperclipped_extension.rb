@@ -2,8 +2,8 @@ require_dependency 'application_controller'
 
 class PaperclippedExtension < Radiant::Extension
   version "0.8.0"
-  description "Assets extension based on the lightweight Paperclip plugin."
-  url "http://github.com/kbingman/paperclipped"
+  description "Assets extension based on the lightweight Paperclip plugin (spanner fork)."
+  url "http://github.com/spanner/paperclipped"
   
   define_routes do |map|
     
@@ -31,6 +31,8 @@ class PaperclippedExtension < Radiant::Extension
     config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
     config.gem 'responds_to_parent', :source => 'http://gemcutter.org'
     config.after_initialize do
+      Paperclip::Railtie.insert
+      
       Paperclip.interpolates :no_original_style do |attachment, style|
         style ||= :original
         style == attachment.default_style ? nil : "_#{style}"

@@ -26,7 +26,10 @@ class Asset < ActiveRecord::Base
 
   before_save :assign_title
   before_update :clear_dimensions
-                                 
+  
+  named_scope :alphabetical, :order => 'title ASC'
+  named_scope :chronological, :order => 'created_at DESC'
+  
   validates_attachment_presence :asset, :message => "You must choose a file to upload!"
   validates_attachment_content_type :asset, 
     :content_type => Radiant::Config["assets.content_types"].gsub(' ','').split(',') if Radiant::Config.table_exists? && Radiant::Config["assets.content_types"] && Radiant::Config["assets.skip_filetype_validation"] == nil
@@ -125,7 +128,7 @@ private
     if asset.dirty?
       self.original_width = nil
       self.original_height = nil
-      self.extension = nil
+      self.original_extension = nil
     end
   end
 

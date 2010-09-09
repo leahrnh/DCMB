@@ -20,7 +20,6 @@ module AssetsAdminUI
             end
             asset.new = asset.edit
             asset.index = Radiant::AdminUI::RegionSet.new do |index|
-              index.preamble.concat %w{header explanation new_button filters}
               index.assets_container
               index.bottom.concat %w{regenerate buttons}
               index.thead.concat %w{thumbnail_header title_header content_type_header modify_header}

@@ -361,45 +361,45 @@ module AssetTags
   tag 'asset_list' do |tag|
     raise TagError, "r:asset_list: no assets to list" unless tag.locals.assets
     options = tag.attr.symbolize_keys
+    paging = pagination_find_options(tag)
     result = []
-    pagination = pagination_control(tag)
-    assets = pagination ? tag.locals.assets.paginate(pagination) : tag.locals.assets.all
-    assets.each do |asset|
+    displayed_assets = paging ? tag.locals.assets.paginate(paging) : tag.locals.assets.all
+    displayed_assets.each do |asset|
       tag.locals.asset = asset
       result << tag.expand
     end
-    if pagination && assets.total_pages > 1
-      tag.locals.paginated_list = assets
-      result << tag.render('pagination')
+    if paging && displayed_assets.total_pages > 1
+      tag.locals.paginated_list = displayed_assets
+      result << tag.render('pagination', tag.attr.dup)
     end
     result
   end
     
-  private
-    
-    def find_asset(tag, options)
-      raise TagError, "'title' or 'id' attribute required" unless title = options.delete('title') or id = options.delete('id') or tag.locals.asset
-      tag.locals.asset || Asset.find_by_title(title) || Asset.find(id)
+private
+  
+  def find_asset(tag, options)
+    raise TagError, "'title' or 'id' attribute required" unless title = options.delete('title') or id = options.delete('id') or tag.locals.asset
+    tag.locals.asset || Asset.find_by_title(title) || Asset.find(id)
+  end
+  
+  def assets_find_options(tag)
+    attr = tag.attr.symbolize_keys
+    extensions = attr[:extensions] && attr[:extensions].split('|') || []
+    conditions = unless extensions.blank?
+      [ extensions.map { |ext| "assets.asset_file_name LIKE ?"}.join(' OR '), 
+        *extensions.map { |ext| "%.#{ext}" } ]
+    else
+      nil
     end
     
-    def assets_find_options(tag)
-      attr = tag.attr.symbolize_keys
-      extensions = attr[:extensions] && attr[:extensions].split('|') || []
-      conditions = unless extensions.blank?
-        [ extensions.map { |ext| "assets.asset_file_name LIKE ?"}.join(' OR '), 
-          *extensions.map { |ext| "%.#{ext}" } ]
-      else
-        nil
-      end
-      
-      by = attr[:by] || "page_attachments.position"
-      order = attr[:order] || "asc"
-      
-      options = {
-        :order => "#{by} #{order}",
-        :limit => attr[:limit] || nil,
-        :offset => attr[:offset] || nil,
-        :conditions => conditions
-      }
-    end    
+    by = attr[:by] || "page_attachments.position"
+    order = attr[:order] || "asc"
+    
+    options = {
+      :order => "#{by} #{order}",
+      :limit => attr[:limit] || nil,
+      :offset => attr[:offset] || nil,
+      :conditions => conditions
+    }
+  end    
 end
