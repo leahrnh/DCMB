@@ -131,25 +131,25 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
   add_index "page_parts", ["name", "page_id"], :name => "parts_by_page"
 
   create_table "pages", :force => true do |t|
-    t.string    "title"
-    t.string    "slug",            :limit => 100
-    t.string    "breadcrumb",      :limit => 160
-    t.string    "class_name",      :limit => 25
-    t.integer   "status_id",                      :default => 1,     :null => false
-    t.integer   "parent_id"
-    t.integer   "layout_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.timestamp "published_at"
-    t.integer   "created_by_id"
-    t.integer   "updated_by_id"
-    t.boolean   "virtual",                        :default => false, :null => false
-    t.integer   "lock_version",                   :default => 0
-    t.string    "description"
-    t.string    "keywords"
-    t.integer   "position",                       :default => 0
-    t.boolean   "commentable",                    :default => true
-    t.boolean   "comments_closed",                :default => false
+    t.string   "title"
+    t.string   "slug",            :limit => 100
+    t.string   "breadcrumb",      :limit => 160
+    t.string   "class_name",      :limit => 25
+    t.integer  "status_id",                      :default => 1,     :null => false
+    t.integer  "parent_id"
+    t.integer  "layout_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "published_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.boolean  "virtual",                        :default => false, :null => false
+    t.integer  "lock_version",                   :default => 0
+    t.string   "description"
+    t.string   "keywords"
+    t.integer  "position",                       :default => 0
+    t.boolean  "commentable",                    :default => true
+    t.boolean  "comments_closed",                :default => false
   end
 
   add_index "pages", ["class_name"], :name => "altered_pages_class_name"
