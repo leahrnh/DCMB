@@ -43,20 +43,20 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
   end
 
   create_table "forums", :force => true do |t|
-    t.string   "name"
-    t.text     "description"
-    t.integer  "site_id"
-    t.integer  "topics_count",  :default => 0
-    t.integer  "posts_count",   :default => 0
-    t.integer  "position"
-    t.integer  "lock_version",  :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.integer  "reader_id"
-    t.boolean  "for_comments"
-    t.integer  "old_id"
+    t.string    "name"
+    t.text      "description"
+    t.integer   "site_id"
+    t.integer   "topics_count",  :default => 0
+    t.integer   "posts_count",   :default => 0
+    t.integer   "position"
+    t.integer   "lock_version",  :default => 0
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.integer   "reader_id"
+    t.boolean   "for_comments"
+    t.integer   "old_id"
   end
 
   add_index "forums", ["site_id"], :name => "index_forums_on_site_id"
@@ -131,25 +131,25 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
   add_index "page_parts", ["name", "page_id"], :name => "parts_by_page"
 
   create_table "pages", :force => true do |t|
-    t.string   "title"
-    t.string   "slug",            :limit => 100
-    t.string   "breadcrumb",      :limit => 160
-    t.string   "class_name",      :limit => 25
-    t.integer  "status_id",                      :default => 1,     :null => false
-    t.integer  "parent_id"
-    t.integer  "layout_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "published_at"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.boolean  "virtual",                        :default => false, :null => false
-    t.integer  "lock_version",                   :default => 0
-    t.string   "description"
-    t.string   "keywords"
-    t.integer  "position",                       :default => 0
-    t.boolean  "commentable",                    :default => true
-    t.boolean  "comments_closed",                :default => false
+    t.string    "title"
+    t.string    "slug",            :limit => 100
+    t.string    "breadcrumb",      :limit => 160
+    t.string    "class_name",      :limit => 25
+    t.integer   "status_id",                      :default => 1,     :null => false
+    t.integer   "parent_id"
+    t.integer   "layout_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.timestamp "published_at"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.boolean   "virtual",                        :default => false, :null => false
+    t.integer   "lock_version",                   :default => 0
+    t.string    "description"
+    t.string    "keywords"
+    t.integer   "position",                       :default => 0
+    t.boolean   "commentable",                    :default => true
+    t.boolean   "comments_closed",                :default => false
   end
 
   add_index "pages", ["class_name"], :name => "altered_pages_class_name"
@@ -163,28 +163,28 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
   end
 
   create_table "post_attachments", :force => true do |t|
-    t.integer  "post_id"
-    t.integer  "reader_id"
-    t.integer  "position"
-    t.string   "file_file_name"
-    t.string   "file_content_type"
-    t.integer  "file_file_size"
-    t.datetime "file_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "post_id"
+    t.integer   "reader_id"
+    t.integer   "position"
+    t.string    "file_file_name"
+    t.string    "file_content_type"
+    t.integer   "file_file_size"
+    t.timestamp "file_updated_at"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "posts", :force => true do |t|
-    t.integer  "reader_id"
-    t.integer  "topic_id"
-    t.integer  "forum_id"
-    t.integer  "site_id"
-    t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.integer  "old_id"
+    t.integer   "reader_id"
+    t.integer   "topic_id"
+    t.integer   "forum_id"
+    t.integer   "site_id"
+    t.text      "body"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.integer   "old_id"
   end
 
   add_index "posts", ["forum_id", "created_at"], :name => "index_posts_on_forum_id"
@@ -259,6 +259,19 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
 
   add_index "snippets", ["name"], :name => "name", :unique => true
 
+  create_table "submenu_links", :force => true do |t|
+    t.string    "name"
+    t.string    "url"
+    t.integer   "user_id"
+    t.integer   "site_id"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+  end
+
+  add_index "submenu_links", ["site_id", "user_id"], :name => "index_links_by_site_and_user"
+
   create_table "taggings", :force => true do |t|
     t.integer "tag_id"
     t.string  "tagged_type"
@@ -268,36 +281,36 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
   add_index "taggings", ["tag_id", "tagged_id", "tagged_type"], :name => "index_taggings_on_tag_id_and_tagged_id_and_tagged_type", :unique => true
 
   create_table "tags", :force => true do |t|
-    t.string   "title"
-    t.text     "description"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "site_id"
+    t.string    "title"
+    t.text      "description"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "site_id"
   end
 
   add_index "tags", ["title"], :name => "index_tags_on_title", :unique => true
 
   create_table "topics", :force => true do |t|
-    t.integer  "forum_id"
-    t.integer  "site_id"
-    t.integer  "reader_id"
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "replied_at"
-    t.integer  "hits",          :default => 0
-    t.boolean  "sticky",        :default => false
-    t.integer  "posts_count",   :default => 0
-    t.integer  "first_post_id"
-    t.integer  "last_post_id"
-    t.boolean  "locked",        :default => false
-    t.integer  "replied_by_id"
-    t.integer  "page_id"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.integer  "old_id"
+    t.integer   "forum_id"
+    t.integer   "site_id"
+    t.integer   "reader_id"
+    t.string    "name"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.timestamp "replied_at"
+    t.integer   "hits",          :default => 0
+    t.boolean   "sticky",        :default => false
+    t.integer   "posts_count",   :default => 0
+    t.integer   "first_post_id"
+    t.integer   "last_post_id"
+    t.boolean   "locked",        :default => false
+    t.integer   "replied_by_id"
+    t.integer   "page_id"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.integer   "old_id"
   end
 
   add_index "topics", ["forum_id", "replied_at"], :name => "index_topics_on_forum_id_and_replied_at"
@@ -307,21 +320,21 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
   add_index "topics", ["site_id"], :name => "index_topics_on_site_id"
 
   create_table "users", :force => true do |t|
-    t.string   "name",          :limit => 100
-    t.string   "email"
-    t.string   "login",         :limit => 40,  :default => "",    :null => false
-    t.string   "password",      :limit => 40
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.boolean  "admin",                        :default => false, :null => false
-    t.boolean  "designer",                     :default => false, :null => false
-    t.text     "notes"
-    t.integer  "lock_version",                 :default => 0
-    t.string   "salt"
-    t.string   "session_token"
-    t.string   "locale"
+    t.string    "name",          :limit => 100
+    t.string    "email"
+    t.string    "login",         :limit => 40,  :default => "",    :null => false
+    t.string    "password",      :limit => 40
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.boolean   "admin",                        :default => false, :null => false
+    t.boolean   "designer",                     :default => false, :null => false
+    t.text      "notes"
+    t.integer   "lock_version",                 :default => 0
+    t.string    "salt"
+    t.string    "session_token"
+    t.string    "locale"
   end
 
   add_index "users", ["login"], :name => "login", :unique => true
