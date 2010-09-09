@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
     t.integer   "reader_id"
     t.boolean   "for_comments"
     t.integer   "old_id"
+    t.integer   "group_id"
   end
 
   add_index "forums", ["site_id"], :name => "index_forums_on_site_id"
@@ -185,6 +186,7 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
     t.integer   "created_by_id"
     t.integer   "updated_by_id"
     t.integer   "old_id"
+    t.integer   "group_id"
   end
 
   add_index "posts", ["forum_id", "created_at"], :name => "index_posts_on_forum_id"
@@ -311,6 +313,7 @@ ActiveRecord::Schema.define(:version => 20091003095744) do
     t.integer   "created_by_id"
     t.integer   "updated_by_id"
     t.integer   "old_id"
+    t.integer   "group_id"
   end
 
   add_index "topics", ["forum_id", "replied_at"], :name => "index_topics_on_forum_id_and_replied_at"

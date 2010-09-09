@@ -1,0 +1,14 @@
+- include_stylesheet('admin/group')
+
+- groups = Group.find(:all)
+- if @group && @forum.new_record?
+  - @forum.group = @group
+
+- fields_for @forum do |f|
+  .row
+    %p.group
+      = f.label :group_id, "Restrict to group:"
+      = f.select :group_id, groups.map { |g| [g.name, g.id] }, {:include_blank => true}
+      %br
+      %span.formnote
+        Leave blank for open access.
