@@ -28,6 +28,7 @@ GEM
     paperclip (2.3.3)
       activerecord
       activesupport
+    pg (0.9.0)
     rack (1.1.0)
     radiant (0.9.1)
       RedCloth (>= 4.0.0)
@@ -53,6 +54,7 @@ DEPENDENCIES
   haml
   hassle
   paperclip (~> 2.3.3)
+  pg
   radiant (= 0.9.1)
   rdiscount (>= 1.3.5)
   responds_to_parent
