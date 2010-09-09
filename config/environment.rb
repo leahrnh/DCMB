@@ -34,7 +34,7 @@ Radiant::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random,
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_dcmb_session',
+    :key => '_dcmb_session',
     :secret      => '3901bcb09981753e93dc31a647616a91a2c122c1'
   }
 
@@ -77,7 +77,7 @@ Radiant::Initializer.run do |config|
   # Set the default field error proc
   config.action_view.field_error_proc = Proc.new do |html, instance|
     if html !~ /label/
-      %{<span class="error-with-field">#{html} <span class="error">&bull; #{[instance.error_message].flatten.first}</span></span>}
+      %{<span class="error-with-field">#{html} <span class="error">#{[instance.error_message].flatten.first}</span></span>}
     else
       html
     end

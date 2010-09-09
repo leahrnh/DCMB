@@ -6820,7 +6820,7 @@ Cookie = {
   accept: function() {
     Cookie.set('b49f729efde9b2578ea9f00563d06e57', 'true');
     if (Cookie.get('b49f729efde9b2578ea9f00563d06e57') == 'true') {
-      Cookie.unset('b49f729efde9b2578ea9f00563d06e57');
+      Cookie.erase('b49f729efde9b2578ea9f00563d06e57');
       return true;
     }
     return false;
@@ -6840,6 +6840,7 @@ Cookie = {
     }
   }
 }
+
 
 /*
  *  popup.js
@@ -8257,6 +8258,25 @@ Toggle.SelectBehavior = Behavior.create({
   }
 });
 
+var ValidationErrorBehavior = Behavior.create({
+  initialize: function() {
+    new ValidationError(this.element);
+  }
+});
+
+var ValidationError = Class.create({
+  initialize: function(element) {
+    this.element = $(element);
+    this.closer = new Element('a', {'href' : '#', 'class' : 'closer' }).update("x");
+    this.closer.observe('click', this.hide.bindAsEventListener(this));
+    this.element.insert(this.closer, {position : 'top'});
+  },
+  hide: function (event) {
+    event.stop();
+    this.element.fade();
+  }
+});
+
 // Ensure that relative_url_root is defined
 if(typeof(relative_url_root) === 'undefined'){ relative_url_root = ''}
 
@@ -8337,5 +8357,8 @@ Event.addBehavior({
   
   'input.date': DateInputBehavior(),
   
-  'select#page_status_id':  PageStatusBehavior()
+  'select#page_status_id':  PageStatusBehavior(),
+  
+  'span.error':  ValidationErrorBehavior()
+  
 });
