@@ -11,6 +11,7 @@ gem 'responds_to_parent'
 gem 'haml'
 gem 'hassle'
 gem 'paperclip', '~> 2.3.3'
+gem 'imagesize', :require => 'image_size'
 
 group :development do
   gem 'sqlite3-ruby'

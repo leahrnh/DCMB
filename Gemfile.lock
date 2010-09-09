@@ -20,6 +20,7 @@ GEM
     hassle (0.0.1)
       haml
       rack
+    imagesize (0.1.1)
     nokogiri (1.4.3.1)
     paperclip (2.3.3)
       activerecord
@@ -55,6 +56,7 @@ DEPENDENCIES
   gravtastic (>= 2.1.3)
   haml
   hassle
+  imagesize
   paperclip (~> 2.3.3)
   pg
   radiant (= 0.9.1)
