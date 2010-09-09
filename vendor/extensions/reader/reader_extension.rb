@@ -72,12 +72,12 @@ class ReaderExtension < Radiant::Extension
       end
     end
     
-    ActionView::Base.field_error_proc = Proc.new do |html_tag, instance_tag| 
-      "<span class='field_error'>#{html_tag}</span>" 
-    end 
+    # ActionView::Base.field_error_proc = Proc.new do |html_tag, instance_tag| 
+    #   "<span class='field_error'>#{html_tag}</span>" 
+    # end 
   end
   
   def deactivate
-    admin.tabs.remove "Readers"
+    admin.tabs.remove "Readers" unless respond_to? :tab
   end
 end
