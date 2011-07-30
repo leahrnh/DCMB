@@ -1,5 +1,5 @@
-if [[ -n "$rvm_environments_path" && -s "$rvm_environments_path/ree-1.8.7-2010.02@dcmb" ]] ; then
-  \. "$rvm_environments_path/ree-1.8.7-2010.02@dcmb"
+if [[ -n "$rvm_environments_path" && -s "$rvm_environments_path/ree-1.8.7-2011.02@dcmb" ]] ; then
+  \. "$rvm_environments_path/ree-1.8.7-2011.02@dcmb"
 else
-  rvm --create use  "ree-1.8.7-2010.02@dcmb"
+  rvm --create use  "ree-1.8.7-2011.02@dcmb"
 fi
