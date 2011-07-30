@@ -59,7 +59,7 @@ Radiant::Initializer.run do |config|
   #    Sets the meta store type and storage location.  We recommend you use
   #    radiant: since this will enable manual expiration and acceleration headers.
   config.middleware.use ::Radiant::Cache
-  #config.middleware.use "Hassle"
+  config.middleware.use "Hassle"
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
