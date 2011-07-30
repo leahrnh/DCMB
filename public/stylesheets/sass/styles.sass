@@ -1,0 +1,152 @@
+$background-color: #87B37E
+$header-color: #18430F
+
+@import url("http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css")
+
+/* typography
+
+em
+  font-style: italic
+
+p
+  font-family: sans-serif
+
+h1, h2, h3, h4, h5, h6, h7
+  font-family: serif
+  
+/* headers
+
+h1, h2, h3
+  font-weight: bold
+  color: $header-color
+
+h2, h3
+  margin-left: 30px
+
+h1
+  text-align: center
+  font-size: 32px
+  padding: 18px
+
+  &.title
+    font-size: 25pt
+    padding: 12px
+    color: white
+
+h2
+  font-size: 24px
+  padding: 5px
+
+h3
+  margin: 18px
+  font-size: 20px
+  
+/* structure
+
+html
+  background-color: #87B37E
+
+body
+  background-color: #87B37E
+  width: 100%
+
+#container
+  width: 900px
+  background-color: #39672F
+  margin: 8px auto 8px auto
+  padding: 0
+  text-align: left
+  overflow: hidden
+
+#header
+  background-color: $header-color
+  color: #FFFFFF
+  padding: 12px
+  overflow: hidden
+
+#navbar
+  float: left
+  width: 180px
+
+#content
+  width: 640px
+  background-color: #FFFFFF
+  padding: 10px 20px 10px 15px
+  margin: 15px
+  margin-left: 195px
+  overflow: hidden
+  -webkit-border-radius: 15px
+  -moz-border-radius: 15px
+  p
+    margin: 15px
+  ul
+    list-style-type: none
+    margin-left: 30px
+
+#footer p
+  background-color: $header-color
+  height: 1em
+
+/* objects
+
+ul.link-list
+  list-style-type: none
+  margin-left: 30px
+
+ul.nav
+  margin: 0 0 0 15px
+  padding: 0
+  list-style-type: none
+  font-family: sans-serif
+  a
+    display: block
+    padding: 3px 3px 5px 30px
+    background-color: #334D2E
+    color: #87B37E
+    color: #FFFFFF
+    text-decoration: none
+    margin-bottom: 5px
+    -webkit-border-radius: 15px
+    -moz-border-radius: 15px
+    &:hover
+      background-color: #87B37E
+      color: #334D2E
+
+#andNow, #m-joke
+  font-size: 14pt
+  font-style: italic
+  color: #77B36A
+  padding: 5px
+
+#andNow
+  margin-left: 15px
+
+#m-joke
+  margin-left: 45px
+
+.floatRight
+  float: right
+  margin: 15px
+
+.floatLeft
+  float: left
+  margin: 0
+  padding: 0
+
+/* specifics
+
+#directorate #content
+  ul
+    margin-left: 0
+  li
+    display: block
+    list-style-position: inside
+
+#directorate li img
+  float: left
+  margin: 0 15px 15px 0
+  width: 108
+  height: 108
+  + img
+    float: right
+    margin: 0 0 15px 15px

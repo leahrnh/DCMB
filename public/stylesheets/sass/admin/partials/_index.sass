@@ -1,0 +1,187 @@
+=status-badge($background: transparent, $color: black, $width: 5em)
+  position: absolute
+  right: 235px
+  height: 14px
+  line-height: 14px
+  font-size: 10px
+  color: $color
+  background: $background
+  display: block
+  padding: 0 6px
+  top: 14px
+  width: $width
+  text-align: center
+  +border-radius(100px)
+
+=object_name  
+  font-size: 115%
+  font-weight: bold
+  img
+    vertical-align: center
+  a
+    color: black
+    text-decoration: none
+    &:hover
+      color: #0066cc
+      text-decoration: underline
+#main
+  // Support floated elements, avoid horizontal scrollbar
+  overflow: hidden
+
+ol.index
+  border-top: 8px solid #9e9e9e
+
+.index
+  font-size: 90%
+  margin-bottom: 2em
+  width: 100%
+  th
+    text-align: left
+    background-color: #9e9e9e
+    color: white
+    font-size: 90%
+    font-weight: normal
+    padding: 2px 9px
+    &.actions
+      padding-left: 15px
+      min-width: 18em
+    &.name
+      width: 100%
+    &.status
+      min-width: 8em
+  li
+    position: relative
+    text-align: left
+  li .attributes, tbody tr
+    .hover, &:hover
+      border-top: 1px solid #d5f0ff
+      border-bottom: 1px solid #c5dff5
+      background: #c5dff5 image_url('admin/row_highlight.png') repeat-x center top
+      +linear-gradient(color_stops(#e5f5ff, #c5dff5))
+  li .attributes, td
+    width: auto
+    height: 31px
+    line-height: 31px
+    padding: 4px 0 4px 10px
+    overflow: hidden
+    text-decoration: none
+    padding-left: 5px
+    border-top: 1px solid transparent
+    border-bottom: 1px solid #F4F4F4
+    .attribute
+      display: block
+      float: left
+      padding-right: 5px
+      &.empty
+        color: silver
+        font-size: 85%
+        font-style: italic
+        padding: 3em
+        text-align: center
+      &.name
+        +object_name
+  li .attributes .actions
+    float: right
+  td.name
+    width: 80%
+    +object_name
+  li .attributes .actions, td.actions
+    a.action, span.action.disabled
+      padding: 6px
+      margin: 0 25px 0 1px
+      font-size: 10px
+      img
+        vertical-align: -10%
+    a.action
+      color: black
+      text-decoration: none
+      &:hover
+        background: #eee image_url('admin/buttons_background.png') repeat-x
+        border: 1px solid #a5c9df
+        margin: 0 24px 0 0
+        +border-radius
+      &.selected
+        background: #c5e0f5
+        +linear-gradient(color_stops(#e5f5ff, #c5e0ff))
+        border: 1px solid #a5c9df
+        margin: 0 24px 0 0
+        +border-top-radius
+        +border-bottom-radius(0)
+    span.action.disabled
+      color: #ccc
+
+.index#pages
+  .page
+    &.level_0 .attributes .attribute.name
+      font-size: 120%
+      font-weight: bold
+    &.level_1 .attributes .attribute.name
+      font-size: 115%
+      font-weight: bold
+    &.level_2 .attributes .attribute.name
+      font-size: 115%
+    &.level_3 .attributes .attribute.name
+      font-size: 105%
+    &.virtual .attributes .attribute.name a .title
+      color: #9eb3bf
+    &.children_visible
+      .children
+        display: block
+    &.children_hidden
+      .children
+        display: none
+    .attributes
+      .attribute.name
+        font-size: 105%
+        a
+          text-decoration: none
+          .title
+            color: black
+            text-decoration: none
+          &:hover .title
+            color: #0066cc
+            text-decoration: underline
+        .info
+          color: #9eb3bf
+          font-style: italic
+          font-weight: normal
+          font-size: 90%
+      .attribute.name
+        position: relative
+        img.expander
+          position: absolute
+          left: -25px
+          top: 8px
+          padding: 0 3px
+          &.hidden
+            visibility: hidden
+      .attribute.status
+        font-size: 80%
+    
+.status
+  +status-badge
+  a
+    +plain-link
+.draft_status
+  +status-badge(#cc494c, white)
+.hidden_status
+  +status-badge(#9eb3bf, white)
+
+.index#users
+  .name
+    padding-top: 8px
+    padding-bottom: 8px
+    img.avatar
+      margin-right: 4px
+      vertical-align: center
+    .login
+      color: #9eb3bf
+      font-size: 90%
+      font-style: italic
+      font-weight: normal
+      
+.inset
+  li
+    list-style: none
+  .actions
+    display: none
