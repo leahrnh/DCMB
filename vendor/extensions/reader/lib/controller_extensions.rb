@@ -35,7 +35,7 @@ module ControllerExtensions    # for inclusion into ApplicationController
     
     def set_reader_for_user
       if current_user
-        current_reader_session = ReaderSession.create!(Reader.find_or_create_for_user(current_user))
+        current_reader_session = ReaderSession.create!(Reader.for_user(current_user))
       end
     end
 
@@ -47,23 +47,26 @@ module ControllerExtensions    # for inclusion into ApplicationController
       session[:return_to] = location
     end
 
+    def redirect_back
+      if session[:return_to]
+        redirect_to session[:return_to]
+        session[:return_to] = nil
+        true
+      else
+        false
+      end
+    end
+
     def redirect_back_or_to(default)
-      redirect_to(session[:return_to] || default)
-      session[:return_to] = nil
+      redirect_back or redirect_to(default)
     end
 
     def redirect_back_with_format(format = 'html')
+      Rails.logger.warn "<<< redirect_back_with_format. session[:return_to] is #{session[:return_to].inspect}"
       address = session[:return_to]
-      raise StandardError, "Can't add format to an already formatted url: #{address}" unless File.extname(address).blank?
+      previous_format = File.extname(address)
+      raise StandardError, "Can't add format to an already formatted url: #{address}" unless previous_format.blank? || previous_format == format
       redirect_to address + ".#{format}"    # nasty! but necessary for inline login.
-    end
-
-    def render_page_or_feed(template_name = action_name)
-      respond_to do |format|
-        format.html { render :action => template_name }
-        format.rss  { render :action => template_name, :layout => 'feed' }
-        format.js  { render :action => template_name, :layout => false }
-      end
     end
 
   end

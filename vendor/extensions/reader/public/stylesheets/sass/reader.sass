@@ -1,0 +1,173 @@
+@import compass/css3
+
+$dark: #4d4e53
+$mid: #8c8d8e
+$pale: #afafaf
+$paler: #bdbdbd
+$verypale: #d6d6d4
+$accent: #d1005d
+$warning: red
+
+=functional
+  font-family: helvetica, arial, sans-serif
+  font-weight: normal
+=strong
+  +functional
+  font-weight: bold
+=small
+  +functional
+  font-size: 80%
+
+div.error, div.notice
+  position: absolute
+  width: 300px
+  top: 50px
+  right: 50px
+  +border-radius
+  +box-shadow($dark 2px 2px 4px)
+  color: white
+  padding: 1px 1em
+  a.closer
+    display: block
+    position: absolute
+    top: 5px
+    right: 5px
+    color: white
+    font-weight: bold
+div.notice
+  background-color: #b2e5b2
+  color: #060
+div.error
+  background-color: #f3c2c2
+  color: #770000
+
+div#readers
+  .reader
+    margin-bottom: 1em
+  h2
+    line-height: 1
+    margin: 0
+  
+div.activation_required
+  color: $accent
+
+p.administrative
+  font-family: helvetica,arial,sans-serif
+  color: $pale
+
+img.gravatar
+  +box-shadow($dark 2px 2px 4px)
+  border: 3px solid white
+  &.thumbnail
+    margin: 2px 10px 10px 0
+  &.big
+    margin: 8px 10px 4px 0
+  &.tiny
+    margin: 3px 6px 4px 0
+    border: 1px solid white
+  &.left
+    float: left
+  &.right
+    float: right
+    margin: 8px 0 4px 10px
+
+form.friendly
+  margin: 0 0 2em 0
+  p
+    margin: 1em 0 0 0
+  input.login
+    width: 95%
+    font-size: 140%
+  input.titular
+    width: 95%
+    font-size: 200%
+  textarea, select
+    width: 95%
+  textarea
+    height: 400px
+  input.standard
+    width: 95%
+  span.formnote
+    +small
+    color: $mid
+  label
+    &.required
+      font-weight: bold
+  div.hidden, div.innocuous
+    display: none
+  span.password
+    display: block
+    width: 95%
+    padding: 5px 
+    font-size: 1.2
+    line-height: 1.2
+    color: $pale
+    border: 1px solid $pale
+  span.error-with-field
+    input, select
+      border: 1px solid red
+      color: $warning
+    span.error
+      +small
+      line-height: 1.4
+      background-color: $warning
+      color: white
+      padding: 3px 6px
+      margin: -5px 0 0 6px
+      cursor: pointer
+      +border-radius
+      +box-shadow($dark 2px 2px 4px)
+      a.closer
+        margin-left: 10px
+        color: white
+        text-decoration: none
+    
+.dashboard_module
+  margin-top: 2em
+  &:first-child
+    margin-top: 0
+  ul
+    margin: 1em 0
+    padding-left: 16px
+  h3:first-child
+    margin-top: 0
+
+address
+  width: 75%
+  border: 1px solid $paler
+  padding: 1em
+  margin: 1em -1em
+  +border-radius(5px)
+  
+a.vcard
+  padding-left: 25px
+  background: transparent url(/images/furniture/vcard_tiny.png) no-repeat 0 3px
+  
+h3.vcard
+  padding-left: 40px
+  background: transparent url(/images/furniture/vcard.png) no-repeat 0 3px
+
+a.mailto
+  color: $mid
+  
+.reader
+  margin-bottom: 1em
+  h2
+    margin-bottom: 0
+  .context
+    margin-top: 0
+  
+.column
+  float: left
+  width: 45%
+  margin-right: 3%
+  
+ul.groups
+  padding: 0
+  margin: 0 0 1em 0
+  li
+    margin-right: 1em
+    display: inline
+
+.cleared
+  clear: left

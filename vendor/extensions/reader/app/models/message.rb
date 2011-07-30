@@ -1,13 +1,11 @@
 class Message < ActiveRecord::Base
 
-  is_site_scoped if defined? ActiveRecord::SiteNotFound
+  has_groups
+  has_site if respond_to? :has_site
 
   belongs_to :layout
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
-
-  has_many :message_readers
-  has_many :readers, :through => :message_readers
 
   has_many :deliveries, :class_name => 'MessageReader', :conditions => ["message_readers.sent_at IS NOT NULL and message_readers.sent_at <= ?", Time.now.to_s(:db)]
   has_many :recipients, :through => :deliveries, :source => :reader
@@ -19,8 +17,8 @@ class Message < ActiveRecord::Base
 
   default_scope :order => 'updated_at DESC, created_at DESC'
   named_scope :for_function, lambda { |f| {:conditions => ["function_id = ?", f.to_s]} }
-  named_scope :administrative, { :conditions => "function_id IS NOT NULL" }
-  named_scope :ordinary, { :conditions => "function_id IS NULL" }
+  named_scope :administrative, { :conditions => "function_id IS NOT NULL AND NOT function_id = ''" }
+  named_scope :ordinary, { :conditions => "function_id = '' OR function_id IS NULL" }
   named_scope :published, { :conditions => "status_id >= 100" }
 
   def filtered_body
@@ -29,11 +27,15 @@ class Message < ActiveRecord::Base
 
   # has to return a named_scope for chainability
   def possible_readers
-    Reader.active
+    groups.any? ? Reader.in_groups(groups) : Reader.scoped({})
   end
 
   def undelivered_readers
-    possible_readers - recipients
+    if recipients.any?
+      possible_readers.except(recipients)
+    else
+      recipients
+    end
   end
 
   def inactive_readers
@@ -48,23 +50,27 @@ class Message < ActiveRecord::Base
     deliveries.any?
   end
 
-  def delivered_to?(reader)
-    recipients.include?(reader)
-  end
-
   def preview(reader=nil)
-    reader ||= possible_readers.first || Reader.find_or_create_for_user(created_by)
+    reader ||= possible_readers.first || Reader.for_user(created_by)
     ReaderNotifier.create_message(reader, self)
   end
   
   def function
     MessageFunction[self.function_id]
   end
-  def self.functional(function)
-    for_function(MessageFunction[function]).first
+  def self.functional(function, group=nil)
+    messages = for_function(function)
+    if group
+      messages.belonging_to(group).first
+    else
+      messages.ungrouped.first
+    end
   end
   def has_function?
     !function.nil?
+  end
+  def administrative?
+    has_function?
   end
 
   def status
@@ -102,4 +108,11 @@ class Message < ActiveRecord::Base
     MessageReader.find_or_create_by_message_id_and_reader_id(self.id, reader.id).update_attribute(:sent_at, Time.now)
   end
 
+  def delivered_to?(reader)
+    recipients.include?(reader)
+  end
+  
+  def delivery_to(reader)
+    deliveries.to_reader(reader).first if delivered_to?(reader)
+  end
 end

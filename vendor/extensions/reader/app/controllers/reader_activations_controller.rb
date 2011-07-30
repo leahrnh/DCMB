@@ -1,17 +1,19 @@
 class ReaderActivationsController < ReaderActionController
+  helper :reader
 
   no_login_required
   skip_before_filter :require_reader
   before_filter :authenticate_reader, :only => [:update]
   before_filter :check_reader_inactive
   
-  radiant_layout { |controller| controller.layout_for :reader }
+  radiant_layout { |controller| Radiant::Config['reader.layout'] }
 
-  # this is just fake REST: we're actually working on the reader, not an activation object, but in a usefully restricted way:
+  # this is just fake REST: we're actually working on the reader, not an activation object.
   # .show sends out an activation message if we can identify the current reader
   # .update activates the reader, if the token is correct
 
   def show
+    expires_now
     render
   end
   
@@ -19,8 +21,9 @@ class ReaderActivationsController < ReaderActionController
     if current_reader
       @reader = current_reader
       @reader.send_activation_message
-      flash[:notice] = "Account activation instructions have been emailed to you."
+      flash[:notice] = t("reader_extension.activation_message_sent")
     end
+    expires_now
     render :action => 'show'
   end
   
@@ -28,12 +31,10 @@ class ReaderActivationsController < ReaderActionController
     if @reader
       @reader.activate!
       self.current_reader = @reader
-      flash[:notice] = "Thank you! Your account has been activated."
-      redirect_back_or_to default_activated_url
-      
+      redirect_to dashboard_url
     else
-      @error = "Sorry: something was wrong in that link. Please check your email message."
-      flash[:error] = "Activation failed."
+      @error = t("reader_extension.please_check_message")
+      expires_now
       render :action => 'show'
     end
   end
@@ -47,14 +48,10 @@ protected
 
   def check_reader_inactive
     if @reader && @reader.activated?
-      flash[:notice] = "Hello #{@reader.name}! Your account is already active."
-      redirect_back_or_to default_activated_url
+      flash[:notice] = t('reader_extension.hello').titlecase + " #{@reader.name}! " + t('reader_extension.already_active')
+      redirect_back_or_to default_welcome_url(@reader)
       false
     end
-  end
-
-  def default_activated_url
-    reader_url(@reader)
   end
 
 end

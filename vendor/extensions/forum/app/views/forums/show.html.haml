@@ -1,38 +1,45 @@
-= render :partial => 'readers/flasher'
-
-#forum
-  #forum_preamble
-    = clean_textilize(@forum.description)
-
-  - unless @forum.for_comments?
-    %p
-      = link_to "start a new discussion here", new_forum_topic_url(@forum), :class => 'newmessage'
-
-  - if @topics.empty?
-    %p No talk here yet.
-
-  - else
-    - unless @topics.current_page == 1
-      = paginate_and_summarise @topics, 'topics'
-
-    %ul.main
-      = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
-
-    = paginate_and_summarise @topics, 'topics'
-
-- content_for :pagetitle do
+- content_for :title do
   = @forum.name
 
-- content_for :feed do
-  = feed_link(formatted_forum_path(@forum, :rss))
+- content_for :introduction do
+  = clean_html(@forum.description)
+
+- content_for :sidebar do
+  = render :partial => "topics/latest"
+
+- content_for :pagination do
+  = pagination_and_summary_for @topics, 'topics'
+
+- content_for :feedurl do
+  = forum_path(@forum, :format => :rss)
+
+- content_for :feedlink do
+  = feed_link(forum_path(@forum, :format => :rss))
 
 - content_for :breadhead do
-  = link_to 'Categories', forums_url, :class => 'breadhead'
+  %span.breadhead
+    = link_to t('forum_extension.forum').titlecase, topics_url
+    = t('reader_extension.separator')
+    = link_to t('forum_extension.forums'), forums_url
 
 - content_for :breadcrumbs do
-  = link_to 'Discussion Categories', forums_url
-  \&gt;
-  = link_to @forum.name, forum_url(@forum) 
+  = link_to t('forum_extension.forum').titlecase, topics_url
+  = t('reader_extension.separator')
+  = link_to t('forum_extension.forums'), forums_url
+  = t('reader_extension.separator')
+  = yield :title
 
-- content_for :controls do
-  = render :partial => 'readers/controls'
+- content_for :messages do
+  - if @topics.empty?
+    %p 
+      = t('forum_extension.no_topics')
+  - else
+    = yield :pagination if @topics.previous_page
+    = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
+    = yield :pagination if @topics.next_page
+
+= render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :messages
+  = yield :newtopic

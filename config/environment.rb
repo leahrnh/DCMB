@@ -12,22 +12,23 @@ require 'radius'
 Radiant::Initializer.run do |config|
   config.gem 'authlogic'
   config.gem 'hassle'
-  
+
   # Skip frameworks you're not going to use (only works if using vendor/rails).
   # To use Rails without a database, you must remove the Active Record framework
-  # config.frameworks -= [ :action_mailer ]
+  #config.frameworks -= [ :action_mailer ]
 
   # Only load the extensions named here, in the order given. By default all
   # extensions in vendor/extensions are loaded, in alphabetical order. :all
   # can be used as a placeholder for all extensions not explicitly named.
-  config.extensions = [ :settings, :share_layouts, :taggable,
-                        :reader, :reader_group, :paperclipped, :all,
-                        :library, :file_system ]
+  config.extensions = [ :settings, :layouts, :mailer_layouts, :taggable,
+                        :reader, :all]
+                        #:library] #, :file_system ]
   
   # By default, only English translations are loaded. Remove any of these from
-  # the list below if you'd like to provide any of the supported languages
-  config.extensions -= [:dutch_language_pack, :french_language_pack, :german_language_pack,
-                        :italian_language_pack, :japanese_language_pack, :russian_language_pack]
+  # the list below if you'd like to provide any of the additional options
+  config.ignore_extensions [:dutch_language_pack, :french_language_pack, :german_language_pack,
+                            :italian_language_pack, :japanese_language_pack, :russian_language_pack,
+                            :debug]
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
@@ -57,11 +58,8 @@ Radiant::Initializer.run do |config|
   #  :metastore => "radiant:tmp/cache/meta"
   #    Sets the meta store type and storage location.  We recommend you use
   #    radiant: since this will enable manual expiration and acceleration headers.
-  config.middleware.use ::Radiant::Cache,
-    :entitystore => "radiant:tmp/cache/entity",
-    :metastore => "radiant:tmp/cache/meta"
-  
-  config.middleware.use "Hassle"
+  config.middleware.use ::Radiant::Cache
+  #config.middleware.use "Hassle"
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
@@ -82,8 +80,16 @@ Radiant::Initializer.run do |config|
       html
     end
   end
-
-  config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
+  
+  config.gem 'rack-cache', :version => "~> 1.0.2"
+  config.gem 'RedCloth', :version => '~> 3.0.4'
+  config.gem 'haml', :version => '~> 3.1.1'
+  config.gem 'sass', :version => '~> 3.1.1'
+  config.gem 'compass', :version => '~> 0.11.1'
+  config.gem 'will_paginate', :version => '~> 2.3.11'
+  config.gem 'delocalize', :version => '~> 0.2.3'
+  config.gem 'radiant-clipped-extension', :version => "~> 1.0.0"
+  config.gem 'acts_as_list'
 
   config.after_initialize do
     # Add new inflection rules using the following format:

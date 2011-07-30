@@ -1,20 +1,32 @@
-/ this form is usually brought in by a remote call to sit on the page in the place of the post itself.
+- content_for :context do
+  %p.context
+    = render :partial => 'posts/context'
 
-- message_type = @topic.page ? 'comment' : 'message'
+- content_for :person do
+  = standard_gravatar_for(@post.reader)
 
-- form_for :post, :url  => topic_post_path(@topic, @post), :html => {:method => 'put', :multipart => true, :id => "post_form_#{@post.id}", :class => 'friendly'} do |f|
-  = render :partial => 'posts/form', :object => f
-  %p.buttons
-    = f.submit "Save changes"
-    or
-    = link_to "cancel", topic_post_path(@topic, @post), :class => 'cancel'
-
-- content_for :pagetitle do
-  Edit
-  = message_type
+- content_for :title do
+  - if @post.page
+    = t('forum_extension.edit_comment')
+  - elsif @post.first? 
+    = t('forum_extension.edit_topic')
+  - else
+    = t('forum_extension.edit_reply')
 
 - content_for :breadhead do
-  = link_to @post.topic.name, forum_topic_url(@post.topic.forum, @post.topic), {:class => 'breadhead'}
+  %span.breadhead
+    - if @post.page
+      = link_to @page.title, @page.url, :class => 'breadhead'
+    - elsif @post.topic && !@post.first?
+      = link_to_topic(@post.topic, :class => 'breadhead')
 
-- content_for :controls do
-  = render :partial => 'readers/controls'
+- content_for :form do
+  - if post.editable_by?(current_reader)
+    = render :partial => 'form', :locals => {:post => @post}
+  - else
+    = render :partial => 'ineditable', :locals => {:post => @post}
+  
+= render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :form

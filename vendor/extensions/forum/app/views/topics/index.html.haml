@@ -1,41 +1,42 @@
-= render :partial => 'readers/flasher'
-
-#forum
-  #forum_preamble
-    %p
-      This is a list of all the discussions going on here, with the most recently updated first. 
-      You can also see a more organised list of 
-      = link_to("discussions by category", forums_url) + '.'
-    
-    %p
-      = link_to "Start a new discussion", new_topic_url, :class => 'newmessage'
-
+- content_for :messages do
   - if @topics.empty?
-    %p No talk here yet.
-
+    %p 
+      = t('forum_extension.no_topics')
   - else
-    - if @topics.previous_page
-      = paginate_and_summarise @topics, 'topics'
-      
-    %ul.main
-      = render :partial => 'topics/topic', :collection => @topics, :locals => {:with_context => true}
+    = render :partial => 'topics/topic', :collection => @topics
 
-    = paginate_and_summarise @topics, 'topics'
+- content_for :sidebar do
+  = render :partial => 'forums/latest'
+  = render :partial => 'topics/busiest'
 
-- content_for :breadhead do
-  = home_page_link(:class => 'breadhead')
+- content_for :pagination do
+  = pagination_and_summary_for(@topics, t('forum_extension.topics'))
 
 - content_for :breadcrumbs do
-  Forum
+  = link_to t('forum_extension.forum').titlecase, topics_url
+  = t('reader_extension.separator')
+  = yield :title
 
-- content_for :pagetitle do
-  Latest discussion
+- content_for :title do
+  = t('forum_extension.topics_heading')
 
-- content_for :feed do
-  = feed_link(topics_path(:format => :rss))
+- content_for :feedurl do
+  = topics_url(:format => :rss)
 
-- content_for :controls do
-  = render :partial => 'readers/controls'
+- content_for :feedlink do
+  = feed_link(topics_url(:format => :rss))
 
-- content_for :help do
-  = render :partial => 'topics/help'
+- content_for :introduction do
+  %p
+    =t('forum_extension.topics_introduction')
+
+= render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :pagination if @topics.previous_page
+  = yield :messages
+  = yield :pagination if @topics.next_page
+  = yield :newtopic
+
+
+

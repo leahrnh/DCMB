@@ -1,83 +1,56 @@
 require_dependency 'application_controller'
+require 'radiant-reader-extension'
 
 class ReaderExtension < Radiant::Extension
-  version "0.83"
-  description "Centralises reader/member/user registration and management tasks for the benefit of other extensions"
-  url "http://spanner.org/radiant/reader"
-  
-  define_routes do |map|
-    
-    map.namespace :admin do |admin|
-      admin.resources :readers, :except => [:show]
-    end
-
-    map.namespace :admin, :path_prefix => 'admin/readers' do |admin|
-      admin.resources :messages, :member => [:preview, :deliver]
-    end
-
-    map.resources :readers
-    map.resources :messages, :only => [:index, :show], :member => [:preview]
-
-    map.resource :reader_session
-    map.resource :reader_activation, :only => [:show, :new]
-    map.resource :password_reset
-    
-    map.repassword '/password_reset/:id/:confirmation_code', :controller => 'password_resets', :action => 'edit'
-    map.activate_me '/activate/:id/:activation_code', :controller => 'reader_activations', :action => 'update'
-    map.reader_register '/register', :controller => 'readers', :action => 'new'
-    map.reader_login '/login', :controller => 'reader_sessions', :action => 'new'
-    map.reader_logout '/logout', :controller => 'reader_sessions', :action => 'destroy'
-    map.reader_permission_denied '/permission_denied', :controller => 'readers', :action => 'permission_denied'
-  end
+  version RadiantReaderExtension::VERSION
+  description RadiantReaderExtension::DESCRIPTION
+  url RadiantReaderExtension::URL
   
   extension_config do |config|
-    config.gem 'authlogic'
-    config.gem 'gravtastic'
-    config.gem 'sanitize', :source => 'http://gemcutter.org'
-    config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
-    config.extension 'share_layouts'
+    config.gem 'authlogic', :version => "~> 2.1.6"
+    config.gem 'sanitize', :version => "~> 2.0.1"
+    config.gem 'snail', :version => "~> 0.5.5"
+    config.gem 'vcard', :version => "~> 0.1.1"
+    config.gem 'fastercsv', :version => "~> 1.5.4"
   end
   
+  migrate_from 'Reader Group', 20110214101339
+  
   def activate
-    Reader
+    ActiveRecord::Base.send :include, GroupedModel                                # has_group mechanism for any model that can belong_to a group
     ApplicationController.send :include, ControllerExtensions                     # hooks up reader authentication and layout-chooser
-    ApplicationHelper.send :include, ReaderHelper                                 # display usefulness including error-wrapper
+    SiteController.send :include, SiteControllerExtensions                        # access control based on group membership
+    Page.send :include, GroupedPage                                               # group associations and visibility decisions
     Site.send :include, ReaderSite if defined? Site                               # adds site scope and site-based layout-chooser
     Page.send :include, ReaderTags                                                # a few mailmerge-like radius tags for use in messages, or for greeting readers on (uncached) pages
-
     UserActionObserver.instance.send :add_observer!, Reader 
     UserActionObserver.instance.send :add_observer!, Message
     
     unless defined? admin.reader
       Radiant::AdminUI.send :include, ReaderAdminUI
-      admin.reader = Radiant::AdminUI.load_default_reader_regions
-      admin.message = Radiant::AdminUI.load_default_message_regions
-      if defined? admin.sites
-        admin.sites.edit.add :form, "admin/sites/choose_reader_layout", :after => "edit_homepage"
-      end
+      Radiant::AdminUI.load_reader_extension_regions
     end
     
-    if respond_to?(:tab)
-      tab("Readers") do
-        add_item("Reader list", "/admin/readers")
-        add_item "Invite reader", "/admin/readers/new"
-        add_item "Messages", "/admin/readers/messages"
-        add_item "New message", "/admin/readers/messages/new"
-      end
-    else
-      admin.tabs.add "Readers", "/admin/readers", :after => "Layouts", :visibility => [:all]
-      if admin.tabs['Readers'].respond_to?(:add_link)
-        admin.tabs['Readers'].add_link('readers', '/admin/readers')
-        admin.tabs['Readers'].add_link('messages', '/admin/readers/messages')
-      end
-    end
+    admin.page.edit.add :layout, "page_groups"
     
-    # ActionView::Base.field_error_proc = Proc.new do |html_tag, instance_tag| 
-    #   "<span class='field_error'>#{html_tag}</span>" 
-    # end 
+    tab("Readers") do
+      add_item("Readers", "/admin/readers")
+      add_item("Groups", "/admin/readers/groups")
+      add_item("Messages", "/admin/readers/messages")
+      add_item("Settings", "/admin/readers/reader_configuration")
+    end
+    tab("Settings") do
+      add_item("Readers", "/admin/readers/reader_configuration")
+    end
   end
   
   def deactivate
-    admin.tabs.remove "Readers" unless respond_to? :tab
+
+  end
+end
+
+module ReaderError
+  class AccessDenied < StandardError
+    def initialize(message = "Sorry: you have to log in to see that"); super end
   end
 end

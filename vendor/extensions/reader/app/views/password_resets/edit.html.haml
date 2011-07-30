@@ -1,71 +1,70 @@
-.mainform
+- content_for :form do
   - if @reader
-
-    %p
-      %strong
-        Hello
-        = @reader.name + '.'
-      Thank you for persevering with the authorization process. 
-      %br
-      Please enter and confirm the new password you would like to use. It must be at least four characters long, nothing obvious or typical and ideally a mixture of numbers and letters.
-
-
     - form_for @reader, :url => password_reset_path, :method => :put, :html => {:class => 'friendly', :autocomplete => "off"} do |f|
 
       - if @reader.errors.any?
-        %p.haserror
-          %strong
-            Sorry: there was a problem.
-          = @reader.errors.full_messages.to_sentence
+        %p.errornote
+          %strong 
+            = t('reader_extension.sorry').titlecase
+            = t('reader_extension.form_problem') + '.'
 
       = hidden_field_tag :id, params[:id]
       = hidden_field_tag :confirmation_code, @reader.perishable_token
 
-      %p{:class => @reader.errors.any? ? 'haserror' : ''}
-        = f.label :password, "New password", :class => 'required'
+      %p
+        = f.label :password, t('reader_extension.new_password'), :class => 'required'
         %br
         = f.password_field :password, :class => 'titular'
 
-      %p{:class => @reader.errors.any? ? 'haserror' : ''}
-        = f.label :password_confirmation, "Repeat for confirmation", :class => 'required'
+      %p
+        = f.label :password_confirmation, t('reader_extension.confirm_password'), :class => 'required'
         %br
         = f.password_field :password_confirmation, :class => 'titular'
       %p
-        = f.submit "Update my password and log me in"
+        = f.submit t('reader_extension.set_new_password')
         
       %p
-        Your password hasn't changed yet, so if you've just remembered it you can still
-        = link_to "log in.", reader_login_url
-
-      - content_for :pagetitle do
-        Change my password
+        = t('reader_extension.password_not_yet_changed', :url => reader_login_url)
 
   - else 
-
-    %p.haserror
-      Sorry: the system can't find you. That link must have been garbled somewhere along the line. 
-      Please paste the 20-character confirmation code into the box below and we'll try again.
-      
     - form_tag edit_password_reset_path, :method => 'GET', :class => 'friendly', :autocomplete => "off" do
       = hidden_field_tag :id, params[:id]
       %p
         %label{:for => "confirmation_code"}
-          confirmation code
+          = t('reader_extension.confirmation_code')
         %br
         = text_field_tag 'confirmation_code', '', :class => 'titular'
 
       %p
-        = submit_tag 'try again'
+        = submit_tag t('reader_extension.continue')
     
-    %p
-      The confirmation code only works for ten minutes, but you can always 
-      = link_to "enter your email address again", new_password_reset_url
-      and we'll send a new one.
+    %ul.actions
+      %li
+        = link_to t("reader_extension.restart_password_change"), new_password_reset_url
       
-    - content_for :pagetitle do
-      Please enter confirmation code
-      
-- content_for :breadcrumbs do
-  = link_to 'Home', '/'
-  &gt; Reset password
+- content_for :title do
+  - if @reader
+    = t('reader_extension.change_password')
+  - else
+    = t('reader_extension.enter_code')
 
+- content_for :introduction do
+  %div.introduction
+    - if @reader
+      %p
+        %strong
+          = t('reader_extension.hello').titlecase
+          = @reader.name + '!'
+        = t('reader_extension.new_password_instructions')
+    - else
+      %p.errornote
+        = t('reader_extension.sorry_reset_not_found')
+    
+- content_for :breadcrumbs do
+  = link_to t('reader_extension.home').titlecase, '/'
+  &gt; 
+  = t('reader_extension.reset_password')
+
+= render :partial => 'shared/standard_reader_parts'
+
+= yield :form

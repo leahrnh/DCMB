@@ -1,4 +1,5 @@
 class MessagesController < ReaderActionController
+  helper :reader
 
   before_filter :require_reader
   before_filter :get_messages, :only => [:index]
@@ -29,6 +30,7 @@ protected
   
   def get_message
     @message = current_reader.messages.find(params[:id])
+    @delivery = @message.delivery_to(current_reader)
   end
 
 end

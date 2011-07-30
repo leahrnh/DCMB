@@ -1,44 +1,40 @@
-= render :partial => 'readers/flasher'
+- content_for :title do
+  = t('forum_extension.forums_heading')
 
-#forum
-  #forum_preamble
-    %p
-      These are the broad filing areas we use to organise the forum. 
-      You can also see a list of 
-      = link_to "all the most recent discussion", topics_url
-      in any category.
+- content_for :introduction do
+  %p
+    = t('forum_extension.forums_introduction')
 
-    %p
-      = link_to "start a new discussion", new_topic_url, :class => 'newmessage'
+- content_for :sidebar do
+  = render :partial => 'posts/search_form', :locals => {:minimal => true}
+  = render :partial => 'topics/latest'
+  = render :partial => 'topics/busiest'
 
+- content_for :messages do
   - if @forums.empty?
-    %p No categories defined here yet.
-
+    %p 
+      = t('forum_extension.no_forums')
   - else
-    - if @forums.previous_page
-      = paginate_and_summarise @forums, 'forums'
+    = yield :pagination if @forums.previous_page
+    = render :partial => 'forums/forum', :collection => @forums
+    = yield :pagination if @forums.next_page
 
-    %ul.main
-      = render :partial => 'forums/forum', :collection => @forums
+- content_for :pagination do
+  = pagination_and_summary_for(@forums, t('forum_extension.forum'))
 
-    = paginate_and_summarise @forums, 'forums'
+- content_for :feedurl do
+  = forums_path(:format => :rss)
 
-- content_for :pagetitle do
-  Discussion Categories
-
-- content_for :feed do
-  = feed_link(formatted_forums_path(:rss))
-
-- content_for :controls do
-  = render :partial => 'readers/controls'
-  
-- content_for :breadhead do
-  = link_to "Forum", topics_url, :class => 'breadhead'
+- content_for :feedlink do
+  = feed_link(forums_path(:format => :rss))
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_url
-  \&gt;
-  Categories
+  = link_to t('forum_extension.forum').titlecase, topics_url
+  = t('reader_extension.separator')
+  = yield :title
 
-- content_for :help do
-  = render :partial => 'topics/help'
+= render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :messages
+  = yield :newtopic

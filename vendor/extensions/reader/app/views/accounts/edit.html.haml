@@ -1,0 +1,29 @@
+- content_for :introduction do
+  %p
+    = t("reader_extension.hello").titlecase
+    = link_to(@reader.name, reader_url(@reader)) + '.'
+    = t('reader_extension.preferences_intro')
+
+- content_for :breadcrumbs do 
+  = link_to t('reader_extension.home').titlecase, '/'
+  &gt;
+  = link_to t('reader_extension.readers').titlecase, readers_url
+  &gt;
+  = link_to t('reader_extension.you').titlecase, profile_url
+  &gt;
+  = t('reader_extension.account_settings')
+
+- content_for :title do 
+  = t('reader_extension.account_settings')
+
+= render :partial => 'shared/standard_reader_parts'
+
+- content_for :main do
+  = render_region :main
+
+- content_for :sidebar do
+  = render_region :sidebar
+    
+
+
+= yield :main

@@ -1,0 +1,23 @@
+- content_for :breadhead do
+  = link_to t('reader_extension.readers').titlecase, readers_url
+  = t('reader_extension.separator')
+
+- content_for :title do
+  = @reader.name
+
+- content_for :breadcrumbs do
+  = yield :breadhead
+  = t('reader_extension.separator')
+  = yield :title
+
+= render :partial => 'shared/standard_reader_parts'
+
+- content_for :sidebar do
+  - render_region :sidebar    
+
+- content_for :main do
+  - render_region :main
+
+
+= yield :main
+

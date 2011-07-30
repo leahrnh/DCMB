@@ -1,31 +1,33 @@
-- include_stylesheet 'reader'
-
-%p
-  Please enter your email address below. If we recognise it, we'll send you a message with a confirmation link (or if your account is not yet active, we'll send the activation message again).
-  %strong
-    Your password will not change until you fill in that form,
-  so only you can complete this process.
-  
-- if @error
-  %p.haserror
-    = @error
-
-.password_form
-
-  - email = current_reader.email if current_reader
-  - form_tag password_reset_path, :class => 'friendly' do
-    %p
-      %label{:for => "email"}
-        Email address
-      %br
-      = text_field_tag 'email', email, :class => 'titular'
-
-    %p
-      = submit_tag 'send me instructions'
-
 - content_for :breadcrumbs do
-  = link_to 'Home', '/'
-  &gt; Reset password
+  = link_to t('reader_extension.home').titlecase, '/'
+  &gt; 
+  = t('reader_extension.reset_password').titlecase
 
-- content_for :pagetitle do
-  Reset your password
+- content_for :title do
+  = t('reader_extension.reset_password').titlecase
+
+- content_for :form do
+  %p
+    =t('reader_extension.password_reset_instructions')
+    %strong
+      =t('reader_extension.password_reset_reassurance')
+
+  - if @error
+    %p.haserror
+      = t(@error)
+
+  .password_form
+    - email = current_reader.email if current_reader
+    - form_tag password_reset_path, :class => 'friendly' do
+      %p
+        %label{:for => "email"}
+          = t('reader_extension.your_email')
+        %br
+        = text_field_tag 'email', email, :class => 'titular'
+
+      %p
+        = submit_tag t('reader_extension.send_reset_button')
+  
+= render :partial => 'shared/standard_reader_parts'
+
+= yield :form

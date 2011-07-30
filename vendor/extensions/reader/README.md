@@ -2,65 +2,67 @@
 
 This is a framework that takes care of all the dull bits of registering, activating, reminding, logging in and editing preferences for your site visitors. 
 
-It uses authlogic to handle sessions and provides complete interfaces both for the administrator and the visitor. The admin interface is basic and fits in with radiant. The visitor interface is more friendly (and incidentally includes a trick email field - so-called inverse captcha - that should prevent spam signups).
+It uses authlogic to handle sessions and provides complete interfaces both for the administrator and the visitor. The admin interface is very basic and fits in with radiant. The visitor interface is more friendly (and incidentally includes a trick email field - so-called inverse captcha - that should prevent spam signups).
 
 The visitors are referred to as 'readers' here. Readers never see the admin interface, but your site authors and admins are automatically given reader status.
 
-The purpose of this extension is to provide a common core that supports other visitor-facing machinery. See for example our [forum extension](http://github.com/spanner/radiant-forum-extension) for discussions and page/blog comments, [reader groups](http://github.com/spanner/radiant-reader_group-extension) for proper page-access control and [downloads extension](http://github.com/spanner/radiant-downloads-extension) for secure access-controlled file downloads. More will follow and I hope other people will make use of this too.
+The purpose of this extension is to provide a common core that supports other visitor-facing machinery. See for example our [forum extension](http://github.com/spanner/radiant-forum-extension) for discussions and page/blog comments and [downloads extension](http://github.com/spanner/radiant-downloads-extension) for secure access-controlled file downloads. More will follow and I hope other people will make use of this framework.
 
 ## Latest
 
-* Compatible with 0.9 functionally, if not quite cosmetically
+This version requires edge radiant, or radiant 1 when it becomes available. We are using a lot of the new configuration and sheets code.
 
-* Other extensions can extend the reader registration/preferences form with `ReaderController.add_form_partial('this/_partial')`
+New ReaderPages provide flexible directory services with configurable access control. The old controller and page parts mechanism is going to be phased out gradually both here and in the forum in favour of more orthodox radiant page-types. We will always need to use the layout-wrapper approach for login and registration forms, though.
 
-* Lots of little bugfixes thanks to radixhound
+Right now we are **not compatible with multi_site or the sites extension**: that's mostly because neither is radiant edge: it will all be sorted out in time for the release of v1, which isn't far away.
 
-* By default we don't cache reader-facing pages.
+Also:
 
-* SQLite compatibility fixes thanks to [elivz](http://github.com/elivz)
-
-* Brought into line with the latest version of our [multi_site](http://github.com/spanner/radiant-multi_site-extension): should now work seamlessly with or without sites. Also now makes use of the [submenu](https://github.com/spanner/radiant-submenu-extension/tree) and I've tweaked the routing so as to allow other extensions to work within the /admin/readers/ space.
+* public interface internationalized;
+* Uses the new configuration interface;
+* Messaging much simplified and now intended to be purely administrative.
+* ajaxable status panel returned by `reader_session_url` (ie. you just have to call /reader_session.js over xmlhttp to get a sensible welcome and control block)
 
 ## Status
 
-Compatible with radiant 0.9, with some rough edges in the appearance.
+Compatible with radiant 1, which isn't out yet. You can use radiant edge to try this out. Expect small changes in support of the new forum and group releases. Multi-site compatibility will follow soon.
 
-Tests are thorough. A lot of our work relies on this extension.
+## Note on internationalisation and customisation
+
+The locale strings here are generally defined in a functional rather than grammatical way. That is, they have labels like `activation_required_explanation` rather than being assembled out of lexical units. This is partly because for flexibility of translation, but also because it gives you an easy way to change the text on functional pages like reader-preferences and registration forms.
 
 ## Requirements
 
-Radiant 0.8.1 (we need the new config machinery) or 0.9. [share_layouts](http://github.com/spanner/radiant-share-layouts-extension) (currently you need our version, which works with ActionMailer too). If you're on 0.8.1 you will probably want the  [submenu](https://github.com/spanner/radiant-submenu-extension/tree) extension too.
+Radiant 0.9.2 (or currently, edge). The [layouts](http://github.com/squaretalent/radiant-layouts-extension) and [mailer_layouts](http://github.com/spanner/radiant-mailer_layouts-extension) extensions.
 
-You also need four gems: authlogic, gravtastic, will_paginate and sanitize. They're declared in the extension so you should be able just to run
+You also need three gems (in addition to those that radiant requires): authlogic, gravtastic and sanitize. They're declared in the extension so you should be able just to run
 
 	sudo rake gems:install
 
-Sanitize uses nokogiri, which needs libxml2 and libxslt: you may need to go off and install those first. It is very likely that you will also need to put
+Sanitize uses nokogiri, which needs libxml2 and libxslt: you may need to go off and install those first. You will also need to put
 
 	gem 'authlogic'
 
-in your environment.rb before you can migrate anything. Authlogic has to load before anything else calls `require ApplicationController`.
+in your environment.rb before you can migrate anything. Authlogic has to load before _anything_ else requires `ApplicationController`.
 
 ## Installation
 
+As a gem:
+
+	gem install 'radiant_reader_extension'
+	
+or for more control:
+
 	git submodule add git://github.com/spanner/radiant-reader-extension.git vendor/extensions/reader
+
+and then:
+
 	rake radiant:extensions:reader:migrate
 	rake radiant:extensions:reader:update
 
-The update task will install a /stylesheets/admin/reader.css that you can leave alone and a /stylesheets/reader.css that you should call from your reader layout (see below) and will want to improve upon. There is also a very thin /javascripts/reader.js: all it does is fade notifications. The forum extension has a lot more javascripts for you to deplore.
-
 ## Configuration
 
-If you want to allow public registration, set `reader.allow_registration?` to true in your configuration. If it is false, then reader accounts can only be created by the administrator.
-
-Under multi_site Reader adds a `reader_layout` column to the site table and a layout-chooser to the site-edit view. In a single-site installation you will also need these configuration entries:
-
-* reader.layout (should be the name of a radiant layout)
-* site.name
-* site.url
-
-The latter two are used in email notifications.
+All the main configuration settings can now be managed through the 'readers' configuration pane.
 
 ## Layouts
 

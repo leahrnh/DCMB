@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe ReaderActivationsController do
-  dataset :messages
+  dataset :readers
   
   before do
     controller.stub!(:request).and_return(request)
@@ -21,24 +21,25 @@ describe ReaderActivationsController do
       @reader.activated_at.should be_close((Time.now).utc, 1.minute)
     end
 
-    it "should redirect to a confirmation page" do
+    it "should redirect to the dashboard" do
       response.should be_redirect
+      response.should redirect_to(dashboard_url)
     end
   end
 
   describe "with an incorrect activation" do
     before do
       @newreader = readers(:inactive)
-      put :update, :email => @newreader.email, :activation_code => 'down perishcope'
+      put :update, :id => @newreader.id, :activation_code => 'down perishcope'
     end
     
-    it "should render the please-activate page" do
+    it "should render the show page" do
       response.should be_success
       response.should render_template("show")
     end
 
-    it "should flash an error" do
-      flash[:error].should_not be_nil
+    it "should not flash an error" do
+      flash[:error].should be_nil
     end
   end
 

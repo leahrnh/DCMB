@@ -1,45 +1,57 @@
-= render :partial => 'readers/flasher'
+- content_for :pagination do
+  = pagination_and_summary_for(@posts, t('forum_extension.post'))
 
-#forum
-  - if @posts.previous_page
-    = paginate_and_summarise @posts, 'comments'
-
-  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first_post => @topic.posts.first }
-
-  - if @posts.next_page
-    = paginate_and_summarise @posts, 'comments'
-  - else
-    - if @topic.page
-      = link_to "Post a reply", new_topic_post_url(@topic), :class => 'inviting remote_content'
-    - else
-      = render :partial => 'posts/reply'
-
-- content_for :pagetitle do
+- content_for :title do
   = @topic.name
 
-- content_for :credits do
-  %p.context
-    posted by
-    = link_to @topic.reader.name, reader_url(@topic.reader)
-    = friendly_date(@topic.created_at)
-    in
-    = link_to @topic.forum.name + '.', forum_url(@topic.forum), {:class => 'breadhead'}
+- content_for :context do
+  = render :partial => 'topics/context'
 
-- content_for :mugshot do
-  = gravatar_for(@topic.reader, {:size => 42}, {:alt => @topic.reader.name, :class => 'gravatar'})
+- content_for :person do
+  = standard_gravatar_for(@topic.reader)
 
-- content_for :feed do
+- content_for :first_post do
+  = render :partial => 'posts/post', :locals => {:post => @topic.posts.first, :headless => true, :with_context => true}
+
+- content_for :sidebar do
+  = render :partial => 'topics/latest'
+
+- content_for :feedurl do
+  = topic_path(@topic, :format => :rss)
+
+- content_for :feedlink do
   = feed_link(topic_path(@topic, :format => :rss))
 
-- content_for :controls do
-  = render :partial => 'readers/controls'
+- content_for :parent do
+  - if @topic.forum
+    = link_to @topic.forum.name + ':', forum_url(@topic.forum)
 
 - content_for :breadhead do
-  = link_to @forum.name, forum_url(@forum), :class => 'breadhead'
+  %span.breadhead
+    = link_to t('forum_extension.forum').titlecase, topics_url
+    = t('reader_extension.separator')
+    = yield :parent
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_url
-  \&gt;
-  = link_to @forum.name, forum_url(@forum) 
-  \&gt;
-  = @topic.name
+  %p.breadcrumbs
+    = link_to t('forum_extension.forum').titlecase, topics_url
+    = t('reader_extension.separator')
+    = yield :parent
+    = t('reader_extension.separator')
+    = yield :title
+
+- content_for :messages do
+  = yield :pagination if @posts.previous_page
+  = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => false}
+  = yield :pagination if @posts.next_page
+
+- content_for :reply_form do
+  = render :partial => 'topics/reply'
+
+= render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :first_post
+  = yield :messages
+  = yield :reply_form unless @posts.next_page
+

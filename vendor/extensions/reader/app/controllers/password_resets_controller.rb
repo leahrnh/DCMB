@@ -1,38 +1,36 @@
-class PasswordResetsController < ApplicationController
+class PasswordResetsController < ReaderActionController
+  helper :reader
 
   # rest gone mad! but it works, and keeps the processes well-defined.
 
-  no_login_required 
+  no_login_required
+  skip_before_filter :require_reader
   before_filter :get_reader, :only => [:edit, :update]
-  radiant_layout { |controller| controller.layout_for :reader }
+  radiant_layout { |controller| Radiant::Config['reader.layout'] }
   
   def new
     render
   end
   
   def create
-    @reader = Reader.find_by_email(params[:email])
-    if @reader
-      if @reader.activated?
-        @reader.send_password_reset_message
-        flash[:notice] = "Password reset instructions have been emailed to you."
+    @forgetter = Reader.find_by_email(params[:email])
+    if @forgetter
+      if @forgetter.activated?
+        @forgetter.send_password_reset_message
         render
       else
-        @reader.send_activation_message
-        flash[:notice] = "Account activation instructions have been emailed to you."
+        @forgetter.send_activation_message
         redirect_to new_reader_activation_url
       end
     else  
-      @error = flash[:error] = "Sorry. That email address is not known here."  
+      @error = flash[:error] = t("reader_extension.email_unknown")
       render :action => :new  
     end  
   end
 
   def edit  
-    if @reader
-      flash[:notice] = "Thank you. Please enter and confirm a new password."
-    else
-      flash[:error] = "Sorry: can't find you."
+    unless @reader
+      flash[:error] = t('reader_extension.reset_not_found')
     end
     render
   end  
@@ -43,14 +41,14 @@ class PasswordResetsController < ApplicationController
       @reader.password_confirmation = params[:reader][:password_confirmation]
       if @reader.save 
         self.current_reader = @reader
-        flash[:notice] = "Thank you. Your password has been updated and you are now logged in."
-        redirect_to url_for(@reader)
+        flash[:notice] = t('reader_extension.password_updated_notice')
+        redirect_to dashboard_url
       else
-        flash[:error] = "Passwords don't match! Please try again."
+        flash[:error] = t('reader_extension.password_mismatch')
         render :action => :edit 
       end  
     else
-      flash[:error] = "Sorry: can't find you."
+      flash[:error] = t('reader_extension.reset_not_found')
       render :action => :edit     # without @reader, this will take us back to the enter-your-code form
     end
   end  

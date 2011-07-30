@@ -1,11 +1,40 @@
-class Tag < ActiveRecord::Base
+require "text/metaphone"
 
+class Tag < ActiveRecord::Base
   attr_accessor :cloud_band, :cloud_size
   
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
+  belongs_to :page
   has_many :taggings, :dependent => :destroy
-  is_site_scoped if defined? ActiveRecord::SiteNotFound
+  before_save :calculate_metaphone
+  
+  has_site if respond_to? :has_site
+
+  # returns the subset of tags meant for public display and selection
+  
+  named_scope :visible, {
+    :conditions => ['visible = 1']
+  }
+
+  # returns the set of hidden editorial tags used for linking and labelling but
+  # not meant for public display.
+
+  named_scope :hidden, {
+    :conditions => ['visible = 0']
+  }
+  
+  # returns the subset of structural tags (ie, those that are page links)
+  
+  named_scope :structural, {
+    :conditions => ['page_id IS NOT NULL']
+  }
+
+  # returns the subset of tags without page links
+  
+  named_scope :descriptive, {
+    :conditions => ['page_id IS NULL']
+  }
 
   # this is useful when we need to go back and add popularity to an already defined list of tags
   
@@ -42,7 +71,9 @@ class Tag < ActiveRecord::Base
     }
   }
   
-  # NB. this won't work with a heterogeneous group. 
+  # this takes a list and returns all the tags attached to any item in that list
+  # NB. won't work with a heterogeneous group: all items must be of the same class
+  
   named_scope :attached_to, lambda { |these|
     klass = these.first.is_a?(Page) ? Page : these.first.class
     {
@@ -50,10 +81,58 @@ class Tag < ActiveRecord::Base
       :conditions => ["tt.tagged_type = '#{klass}' and tt.tagged_id IN (#{these.map{'?'}.join(',')})", *these.map(&:id)],
     }
   }
-    
+  
+  # this takes a class name and returns all the tags attached to any object of that class
+  
+  named_scope :attached_to_a, lambda { |klass|
+    klass = klass.to_s.titleize
+    {
+      :joins => "INNER JOIN taggings as tt ON tt.tag_id = tags.id", 
+      :conditions => "tt.tagged_type = '#{klass}'",
+    }
+  }
+
+  # this should probably be sorted better but I want to keep it as quick an operation as possible
+  # so only the one query is allowed
+  
+  named_scope :suggested_by, lambda { |term|
+    metaphone = Text::Metaphone.metaphone(term)
+    {
+      :conditions => ["tags.title LIKE ? OR tags.metaphone LIKE ?", "%#{term}%", "&#{metaphone}%"]
+    }
+  }
+  
+  # returns all the tags that have been applied alongside any of these tags: that is, the
+  # set of tags that if applied will reduce further a set of tagged objects.
+  
+  named_scope :coincident_with, lambda { |tags|
+    tag_ids = tags.map(&:id).join(',')
+    {
+      :select => "your_tags.*, COUNT(your_tags.id) AS use_count",
+      :joins => %{
+        INNER JOIN taggings AS my_taggings ON my_taggings.tag_id = tags.id 
+        INNER JOIN taggings AS your_taggings ON my_taggings.tagged_type = your_taggings.tagged_type AND my_taggings.tagged_id = your_taggings.tagged_id
+        INNER JOIN tags AS your_tags ON your_taggings.tag_id = your_tags.id
+      }, 
+      :conditions => "tags.id IN (#{tag_ids}) AND NOT your_tags.id IN (#{tag_ids})",
+      :group => "your_tags.id"
+    }
+  }
+  
+  def <=>(othertag)
+    String.natcmp(self.title, othertag.title)   # natural sort method defined in lib/natcomp.rb
+  end
+  
   def to_s
     title
   end
+  
+  # returns true if this tag points to a page
+  
+  def structural
+    !page_id.nil?
+  end
+  alias :structural? :structural
   
   # Standardises formatting of tag name in urls
   
@@ -67,28 +146,32 @@ class Tag < ActiveRecord::Base
     taggings.map {|t| t.tagged}
   end
   
+  # Returns a list of all the pages tagged with this tag.
+  
+  def pages
+    Page.from_tags([self])
+  end
+  
+  # Returns a list of all the assets tagged with this tag.
+  
+  def assets
+    Asset.from_tags([self])
+  end
+  
+  # Returns a list of all the assets of a particular type tagged with this tag.
+  
+  Asset.known_types.each do |type|
+    define_method type.to_s.pluralize.intern do
+      Asset.send("#{type.to_s.pluralize}".intern).from_tags([self])
+    end
+  end
+  
   # Returns a list of all the tags that have been applied alongside this one.
   
   def coincident_tags
-    tags = []
-    self.tagged.each do |t|
-      tags += t.attached_tags if t
-    end
-    tags.uniq - [self]
+    self.class.coincident_with(self)
   end
-  
-  # Returns a list of all the tags that have been applied alongside _all_ of the supplied tags.
-  # used for faceting on tag pages
-  
-  def self.coincident_with(tags)
-    related_tags = []
-    tagged = Tagging.with_all_of_these(tags).map(&:tagged)
-    tagged.each do |t|
-      related_tags += t.attached_tags if t
-    end
-    related_tags.uniq - tags
-  end
-  
+    
   # returns true if tags are site-scoped
   
   def self.sited?
@@ -133,6 +216,7 @@ class Tag < ActiveRecord::Base
     end
   end
   
+  # applies a more sophisticated logarithmic weighting algorithm to a set of tags.
   # derived from here:
   # http://stackoverflow.com/questions/604953/what-is-the-correct-algorthm-for-a-logarthmic-distribution-curve-between-two-poin
   
@@ -159,6 +243,7 @@ class Tag < ActiveRecord::Base
   end
   
   # takes a list of tags and reaquires it from the database, this time with incidence.
+  # cheap call because it returns immediately if the list is already cloudable.
   
   def self.for_cloud(tags)
     return tags if tags.empty? || tags.first.cloud_size
@@ -171,11 +256,19 @@ class Tag < ActiveRecord::Base
   
   # adds retrieval methods for a taggable class to this class and to Tagging.
   
-  def self.define_class_retrieval_methods(classname)
-    Tagging.send :named_scope, "of_#{classname.downcase.pluralize}".intern, :conditions => { :tagged_type => classname.to_s }
-    define_method("#{classname.downcase}_taggings") { self.taggings.send "of_#{classname.downcase.pluralize}".intern }
-    define_method("#{classname.downcase.pluralize}") { self.send("#{classname.to_s.downcase}_taggings".intern).map{|l| l.tagged} }
+  def self.define_retrieval_methods(classname)
+    define_method "#{classname.downcase}_taggings".to_sym do
+      self.taggings.of_a(classname)
+    end
+    define_method classname.downcase.pluralize.to_sym do
+      classname.constantize.send :from_tag, self
+    end
+  end  
+
+protected
+  
+  def calculate_metaphone
+    self.metaphone = Text::Metaphone.metaphone(self.title) if self.respond_to? :metaphone=
   end
-      
 end
 
