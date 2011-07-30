@@ -6,8 +6,6 @@ Created by Bright 4, February 2009. Inspired by and based on Sean Cribbs' Reorde
 
 Only designers and admins have the ability to re-order pages
 
-Master should work with Radiant Edge. Use git tag radiant-0.9.1 with the Radiant 0.9.1 gem.
-
 == Installation
 
     git clone git://github.com/gerrit/radiant-drag-order.git vendor/extensions/drag_order
@@ -16,9 +14,6 @@ Master should work with Radiant Edge. Use git tag radiant-0.9.1 with the Radiant
     rake radiant:extensions:drag_order:update
 
 == Version History
-
-# v0.3.6 - 2010-08-31
-- updated for Radiant 0.9 edge. Use tag radiant-0.9.1 with released gem version
 
 # v0.3.5 - 2010-07-09
 - renamed back to DragOrder

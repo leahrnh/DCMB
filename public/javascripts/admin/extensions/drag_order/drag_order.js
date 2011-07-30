@@ -185,7 +185,7 @@ var DragOrder = Class.create({
 // If the DOM is loaded, create the DragOrder object
 document.observe('dom:loaded', function() {
   $$('table.index').each(function(table){
-    if(table.identify() == 'pages') {
+    if(table.identify() == 'site_map') {
       new DragOrder(table);
     }
   });

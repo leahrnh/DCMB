@@ -2,7 +2,7 @@
 # require_dependency 'application_controller'
 
 class DragOrderExtension < Radiant::Extension
-  version "0.3.6"
+  version "0.3.5"
   description "Radiant DragOrder allows you to reorder pages funly"
   url "http://github.com/gerrit/radiant-drag-order"
   
