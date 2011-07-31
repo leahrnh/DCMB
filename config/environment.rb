@@ -12,6 +12,7 @@ require 'radius'
 Radiant::Initializer.run do |config|
   config.gem 'authlogic'
   config.gem 'hassle'
+  config.gem 'acts_as_list'
 
   # Skip frameworks you're not going to use (only works if using vendor/rails).
   # To use Rails without a database, you must remove the Active Record framework
@@ -89,7 +90,6 @@ Radiant::Initializer.run do |config|
   config.gem 'will_paginate', :version => '~> 2.3.11'
   config.gem 'delocalize', :version => '~> 0.2.3'
   config.gem 'radiant-clipped-extension', :version => "~> 1.0.0"
-  config.gem 'acts_as_list'
 
   config.after_initialize do
     # Add new inflection rules using the following format:

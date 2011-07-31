@@ -27,7 +27,7 @@ class Post < ActiveRecord::Base
   named_scope :from_reader, lambda { |reader| { :conditions => ["reader_id = ?", reader.id] }}
   named_scope :latest, lambda { |count| { :order => 'created_at DESC', :limit => count }}
   named_scope :except, lambda { |post| { :conditions => ["NOT posts.id = ?", post.id] }}
-  named_scope :distinct_readers, :select => "DISTINCT posts.reader_id" do
+  named_scope :distinct_readers, :select => "DISTINCT posts.reader_id, posts.created_at" do
     def count
       self.length  # replacing a SQL shortcut that omits the distinct clause
     end

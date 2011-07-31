@@ -1,3 +1,5 @@
+require 'acts_as_list'
+
 class PostAttachment < ActiveRecord::Base
 
   named_scope :imported, :conditions => "old_id IS NOT NULL"
