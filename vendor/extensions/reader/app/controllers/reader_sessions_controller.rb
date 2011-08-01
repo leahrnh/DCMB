@@ -66,10 +66,9 @@ class ReaderSessionsController < ReaderActionController
   def destroy
     current_reader_session.destroy
     if current_user
-      cookies[:session_token] = { :expires => 1.day.ago }
-      current_user.forget_me
-      session['user_id'] = nil
-      current_user = nil
+      request.cookies[:session_token] = { :expires => 1.day.ago.utc }
+      self.current_user.forget_me if self.current_user
+      self.current_user = nil
     end
     redirect_to reader_login_url
   end
