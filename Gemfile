@@ -1,6 +1,6 @@
-source 'http://rubygems.org'
+source :rubygems
 
-gem 'rails', '2.3.11' # not actually needed, but Heroku wants it 'cause they think this is a Rails app
+gem 'rails'  # not actually needed, but Heroku wants it 'cause they think this is a Rails app
 gem 'radiant', :git => 'https://github.com/radiant/radiant.git', :submodules => true
 gem 'rdiscount','>= 1.3.5'
 gem 'authlogic', '>= 2.1.2'
@@ -10,10 +10,7 @@ gem 'acts_as_list'
 gem 'responds_to_parent'
 gem 'haml'
 gem 'hassle'
-gem 'paperclip', '2.3.11'
 gem 'imagesize', :require => 'image_size'
-gem 'radiant-clipped-extension', '~> 1.0.0'
-gem 'coffee-script', '~> 2.2.0'
 
 # for reader extension
 gem 'snail', '~> 0.5.5'
