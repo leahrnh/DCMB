@@ -12,10 +12,8 @@ gem 'haml'
 gem 'hassle'
 gem 'imagesize', :require => 'image_size'
 
-# for reader extension
-gem 'snail', '~> 0.5.5'
-gem 'vcard', '~> 0.1.1'
-gem 'fastercsv', '~> 1.5.4'
+gem 'snail'
+gem 'radiant-reader-extension', :git => 'https://github.com/spanner/radiant-reader-extension.git'
 
 group :development do
   gem 'sqlite3-ruby'
