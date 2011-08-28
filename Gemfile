@@ -14,6 +14,7 @@ gem 'imagesize', :require => 'image_size'
 
 gem 'snail'
 gem 'radiant-reader-extension', :git => 'https://github.com/spanner/radiant-reader-extension.git'
+gem 'radiant-forum-extension', :git => 'https://github.com/spanner/radiant-forum-extension.git'
 
 group :development do
   gem 'sqlite3-ruby'

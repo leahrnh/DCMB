@@ -1,7 +1,0 @@
-%li.post
-  = link_to_post(minimal, :class => 'title')
-  %br
-  %span.context
-    = render :partial => 'posts/context', :locals => {:post => minimal}
-  %br
-  = truncate_words(scrub_html(minimal.body), 12)
