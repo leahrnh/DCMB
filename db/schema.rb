@@ -70,6 +70,11 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
     t.boolean   "public"
     t.text      "invitation"
     t.string    "slug"
+    t.integer   "parent_id"
+    t.integer   "root_group_id"
+    t.integer   "lft"
+    t.integer   "rgt"
+    t.integer   "leader_id"
   end
 
   create_table "layouts", :force => true do |t|
@@ -86,6 +91,7 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
   create_table "memberships", :force => true do |t|
     t.integer "group_id"
     t.integer "reader_id"
+    t.string  "role"
   end
 
   create_table "message_readers", :force => true do |t|
@@ -96,20 +102,19 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
   end
 
   create_table "messages", :force => true do |t|
-    t.integer   "site_id"
-    t.string    "subject"
-    t.text      "body"
-    t.text      "filter_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "created_by_id"
-    t.integer   "updated_by_id"
-    t.integer   "lock_version"
-    t.string    "function_id"
-    t.integer   "status_id",     :default => 1
-    t.integer   "group_id"
-    t.integer   "layout_id"
-    t.timestamp "sent_at"
+    t.integer  "site_id"
+    t.string   "subject"
+    t.text     "body"
+    t.text     "filter_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.integer  "lock_version"
+    t.string   "function_id"
+    t.integer  "status_id",     :default => 1
+    t.integer  "layout_id"
+    t.datetime "sent_at"
   end
 
   create_table "page_attachments", :force => true do |t|
