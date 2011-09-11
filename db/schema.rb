@@ -57,25 +57,24 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
   end
 
   create_table "groups", :force => true do |t|
-    t.string    "name"
-    t.text      "description"
-    t.text      "notes"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "created_by_id"
-    t.integer   "updated_by_id"
-    t.integer   "homepage_id"
-    t.integer   "site_id"
-    t.integer   "lock_version"
-    t.boolean   "public"
-    t.text      "invitation"
-    t.string    "slug"
-    t.integer   "parent_id"
-    t.integer   "root_group_id"
-    t.integer   "lft"
-    t.integer   "rgt"
-    t.integer   "leader_id"
+    t.string   "name"
+    t.text     "description"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.integer  "homepage_id"
+    t.integer  "site_id"
+    t.integer  "lock_version"
+    t.boolean  "public"
+    t.text     "invitation"
+    t.string   "slug"
+    t.integer  "leader_id"
+    t.string   "ancestry"
   end
+
+  add_index "groups", ["ancestry"], :name => "index_groups_on_ancestry"
 
   create_table "layouts", :force => true do |t|
     t.string    "name",          :limit => 100
@@ -92,6 +91,7 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
     t.integer "group_id"
     t.integer "reader_id"
     t.string  "role"
+    t.boolean "admin"
   end
 
   create_table "message_readers", :force => true do |t|
@@ -102,19 +102,19 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
   end
 
   create_table "messages", :force => true do |t|
-    t.integer  "site_id"
-    t.string   "subject"
-    t.text     "body"
-    t.text     "filter_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.integer  "lock_version"
-    t.string   "function_id"
-    t.integer  "status_id",     :default => 1
-    t.integer  "layout_id"
-    t.datetime "sent_at"
+    t.integer   "site_id"
+    t.string    "subject"
+    t.text      "body"
+    t.text      "filter_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.integer   "lock_version"
+    t.string    "function_id"
+    t.integer   "status_id",     :default => 1
+    t.integer   "layout_id"
+    t.timestamp "sent_at"
   end
 
   create_table "page_attachments", :force => true do |t|
