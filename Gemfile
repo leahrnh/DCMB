@@ -16,6 +16,8 @@ gem 'snail'
 gem 'radiant-reader-extension', :git => 'https://github.com/aughr/radiant-reader-extension.git'
 gem 'radiant-forum-extension', :git => 'https://github.com/spanner/radiant-forum-extension.git'
 
+gem 'cucumber', '1.0.3'
+
 group :development do
   gem 'sqlite3-ruby'
 end
