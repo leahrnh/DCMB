@@ -1,4 +1,18 @@
 GIT
+  remote: https://github.com/aughr/radiant-reader-extension.git
+  revision: b2b46da33db582a39e46eb291363646f570366de
+  specs:
+    radiant-reader-extension (3.0.27)
+      ancestry (~> 1.2.4)
+      authlogic (~> 2.1.6)
+      fastercsv (~> 1.5.4)
+      radiant-layouts-extension (~> 1.1.3)
+      radiant-mailer_layouts-extension (~> 0.1.1)
+      sanitize (~> 2.0.1)
+      snail (~> 0.5.5)
+      vcard (~> 0.1.1)
+
+GIT
   remote: https://github.com/radiant/radiant.git
   revision: fe86753bf4d8f59f63fdb690067430396ffce152
   submodules: true
@@ -35,19 +49,6 @@ GIT
     radiant-forum-extension (3.0.3)
       acts_as_list (~> 0.1.2)
       radiant-reader-extension (~> 3.0.8)
-
-PATH
-  remote: ../radiant-reader-extension
-  specs:
-    radiant-reader-extension (3.0.27)
-      ancestry (~> 1.2.4)
-      authlogic (~> 2.1.6)
-      fastercsv (~> 1.5.4)
-      radiant-layouts-extension (~> 1.1.3)
-      radiant-mailer_layouts-extension (~> 0.1.1)
-      sanitize (~> 2.0.1)
-      snail (~> 0.5.5)
-      vcard (~> 0.1.1)
 
 GEM
   remote: http://rubygems.org/
