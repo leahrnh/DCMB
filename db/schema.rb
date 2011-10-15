@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100810151922) do
+ActiveRecord::Schema.define(:version => 20110902203823) do
 
   create_table "assets", :force => true do |t|
     t.string    "caption"
@@ -142,10 +142,10 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
 
   create_table "pages", :force => true do |t|
     t.string    "title"
-    t.string    "slug",            :limit => 100
-    t.string    "breadcrumb",      :limit => 160
-    t.string    "class_name",      :limit => 25
-    t.integer   "status_id",                      :default => 1,     :null => false
+    t.string    "slug",                   :limit => 100
+    t.string    "breadcrumb",             :limit => 160
+    t.string    "class_name",             :limit => 25
+    t.integer   "status_id",                             :default => 1,     :null => false
     t.integer   "parent_id"
     t.integer   "layout_id"
     t.timestamp "created_at"
@@ -153,13 +153,14 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
     t.timestamp "published_at"
     t.integer   "created_by_id"
     t.integer   "updated_by_id"
-    t.boolean   "virtual",                        :default => false, :null => false
-    t.integer   "lock_version",                   :default => 0
-    t.integer   "position",                       :default => 0
-    t.boolean   "commentable",                    :default => true
-    t.boolean   "comments_closed",                :default => false
+    t.boolean   "virtual",                               :default => false, :null => false
+    t.integer   "lock_version",                          :default => 0
+    t.integer   "position",                              :default => 0
+    t.boolean   "commentable",                           :default => true
+    t.boolean   "comments_closed",                       :default => false
     t.timestamp "replied_at"
     t.integer   "replied_by_id"
+    t.string    "allowed_children_cache",                :default => ""
   end
 
   add_index "pages", ["class_name"], :name => "altered_pages_class_name"
@@ -202,53 +203,53 @@ ActiveRecord::Schema.define(:version => 20100810151922) do
   add_index "posts", ["reader_id", "created_at"], :name => "index_posts_on_reader_id"
 
   create_table "readers", :force => true do |t|
-    t.integer  "site_id"
-    t.string   "name",                    :limit => 100
-    t.string   "email"
-    t.string   "crypted_password"
-    t.text     "description"
-    t.text     "notes"
-    t.boolean  "trusted",                                :default => true
-    t.boolean  "receive_email",                          :default => false
-    t.boolean  "receive_essential_email",                :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "created_by_id"
-    t.integer  "updated_by_id"
-    t.string   "password_salt"
-    t.string   "session_token"
-    t.string   "provisional_password"
-    t.datetime "activated_at"
-    t.string   "honorific"
-    t.integer  "user_id"
-    t.datetime "last_request_at"
-    t.datetime "last_login_at"
-    t.string   "persistence_token",                      :default => "",    :null => false
-    t.string   "single_access_token",                    :default => "",    :null => false
-    t.string   "perishable_token",                       :default => "",    :null => false
-    t.integer  "login_count",                            :default => 0,     :null => false
-    t.integer  "failed_login_count",                     :default => 0,     :null => false
-    t.string   "current_login_ip"
-    t.string   "last_login_ip"
-    t.string   "clear_password"
-    t.string   "forename"
-    t.string   "phone"
-    t.string   "organisation"
-    t.string   "post_line1"
-    t.string   "post_line2"
-    t.string   "post_organisation"
-    t.string   "post_city"
-    t.string   "post_province"
-    t.string   "postcode"
-    t.integer  "posts_count",                            :default => 0
-    t.integer  "old_id"
-    t.string   "post_country"
-    t.string   "mobile"
-    t.boolean  "unshareable"
-    t.text     "unshared"
-    t.string   "surname"
-    t.datetime "current_login_at"
-    t.string   "nickname"
+    t.integer   "site_id"
+    t.string    "name",                    :limit => 100
+    t.string    "email"
+    t.string    "crypted_password"
+    t.text      "description"
+    t.text      "notes"
+    t.boolean   "trusted",                                :default => true
+    t.boolean   "receive_email",                          :default => false
+    t.boolean   "receive_essential_email",                :default => true
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "created_by_id"
+    t.integer   "updated_by_id"
+    t.string    "password_salt"
+    t.string    "session_token"
+    t.string    "provisional_password"
+    t.timestamp "activated_at"
+    t.string    "honorific"
+    t.integer   "user_id"
+    t.timestamp "last_request_at"
+    t.timestamp "last_login_at"
+    t.string    "persistence_token",                      :default => "",    :null => false
+    t.string    "single_access_token",                    :default => "",    :null => false
+    t.string    "perishable_token",                       :default => "",    :null => false
+    t.integer   "login_count",                            :default => 0,     :null => false
+    t.integer   "failed_login_count",                     :default => 0,     :null => false
+    t.string    "current_login_ip"
+    t.string    "last_login_ip"
+    t.string    "clear_password"
+    t.string    "forename"
+    t.string    "phone"
+    t.string    "organisation"
+    t.string    "post_line1"
+    t.string    "post_line2"
+    t.string    "post_organisation"
+    t.string    "post_city"
+    t.string    "post_province"
+    t.string    "postcode"
+    t.integer   "posts_count",                            :default => 0
+    t.integer   "old_id"
+    t.string    "post_country"
+    t.string    "mobile"
+    t.boolean   "unshareable"
+    t.text      "unshared"
+    t.string    "surname"
+    t.timestamp "current_login_at"
+    t.string    "nickname"
   end
 
   add_index "readers", ["session_token"], :name => "session_token"
