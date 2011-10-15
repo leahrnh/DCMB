@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/aughr/radiant-reader-extension.git
-  revision: b2b46da33db582a39e46eb291363646f570366de
+  revision: 00ae8a51077d1b45a4b37034d5236bbbe3e31a64
   specs:
     radiant-reader-extension (3.0.27)
       ancestry (~> 1.2.4)
@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/radiant/radiant.git
-  revision: fe86753bf4d8f59f63fdb690067430396ffce152
+  revision: 4c402ba31b070ae3ff5e4e26b4055c008a8a5fd5
   submodules: true
   specs:
     radiant (1.0.0.rc3)
